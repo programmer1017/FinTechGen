@@ -1,0 +1,2992 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinTechGen - منصة الذكاء الاصطناعي المالية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'cairo': ['Cairo', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'fintech-dark': '#0f172a',
+                        'fintech-blue': '#1e3a5f',
+                        'fintech-green': '#10b981',
+                        'fintech-gold': '#f59e0b',
+                        'fintech-teal': '#14b8a6',
+                        'fintech-light': '#f8fafc',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { scroll-behavior: smooth; }
+        body { font-family: 'Cairo', sans-serif; background: #0f172a; overflow-x: hidden; }
+        .glass-card {
+            background: rgba(30, 58, 95, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #10b981, #14b8a6, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-bg {
+            background: radial-gradient(ellipse at top, #1e3a5f 0%, #0f172a 50%, #020617 100%);
+            position: relative;
+        }
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2310b981' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+        .floating { animation: float 6s ease-in-out infinite; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .pulse-glow { animation: pulseGlow 2s ease-in-out infinite; }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.6); }
+        }
+        .slide-in {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease-out;
+        }
+        .slide-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .chart-container { position: relative; height: 300px; width: 100%; }
+        .risk-meter {
+            width: 200px; height: 200px; border-radius: 50%;
+            background: conic-gradient(from 180deg, #10b981 0deg, #f59e0b 120deg, #ef4444 240deg, #10b981 360deg);
+            position: relative; display: flex; align-items: center; justify-content: center;
+        }
+        .risk-meter::before {
+            content: ''; position: absolute; width: 160px; height: 160px; border-radius: 50%; background: #1e293b;
+        }
+        .risk-needle {
+            position: absolute; width: 4px; height: 80px; background: #fff;
+            bottom: 50%; left: 50%; transform-origin: bottom center;
+            transform: translateX(-50%) rotate(-90deg); transition: transform 1s ease-out;
+            border-radius: 2px; z-index: 10;
+        }
+        .risk-needle::after {
+            content: ''; position: absolute; width: 16px; height: 16px; background: #fff;
+            border-radius: 50%; bottom: -8px; left: 50%; transform: translateX(-50%);
+        }
+        .typing-effect::after { content: '|'; animation: blink 1s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        .progress-bar { transition: width 1s ease-out; }
+        .tab-active {
+            background: linear-gradient(135deg, #10b981, #14b8a6);
+            color: white;
+        }
+        .notification { animation: slideInRight 0.5s ease-out; }
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .grid-pattern {
+            background-image: linear-gradient(rgba(16, 185, 129, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(16, 185, 129, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        .logo-shield { filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.4)); }
+        .number-counter { font-variant-numeric: tabular-nums; }
+        .sidebar-item:hover {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.1), transparent);
+            border-right: 3px solid #10b981;
+        }
+        .sidebar-item.active {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.2), transparent);
+            border-right: 3px solid #10b981;
+        }
+        .saving-plan-card { transition: all 0.3s ease; }
+        .saving-plan-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.2);
+        }
+        .market-ticker { animation: ticker 30s linear infinite; }
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .ai-brain { animation: brainPulse 3s ease-in-out infinite; }
+        @keyframes brainPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #10b981; }
+    </style>
+<base target="_blank">
+</head>
+<body class="text-white">
+
+    <!-- Auth Overlay (Login/Register) -->
+    <div id="authOverlay" class="fixed inset-0 z-[100] bg-fintech-dark flex items-center justify-center">
+        <div class="absolute inset-0 grid-pattern"></div>
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+            <div class="absolute top-20 left-20 w-72 h-72 bg-fintech-green/10 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-20 right-20 w-96 h-96 bg-fintech-teal/10 rounded-full blur-3xl"></div>
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-fintech-blue/20 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="relative z-10 w-full max-w-md mx-4">
+            <!-- Logo -->
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-fintech-green to-fintech-teal flex items-center justify-center logo-shield">
+                    <svg viewBox="0 0 100 100" class="w-12 h-12 text-white">
+                        <path d="M50 10 L90 30 L90 70 L50 90 L10 70 L10 30 Z" fill="none" stroke="currentColor" stroke-width="3"/>
+                        <path d="M50 25 L75 40 L75 60 L50 75 L25 60 L25 40 Z" fill="currentColor" opacity="0.3"/>
+                        <path d="M30 50 L50 35 L70 50 L50 65 Z" fill="currentColor"/>
+                        <path d="M50 35 L50 20" stroke="currentColor" stroke-width="2"/>
+                        <path d="M70 50 L80 45" stroke="currentColor" stroke-width="2"/>
+                        <path d="M50 65 L50 80" stroke="currentColor" stroke-width="2"/>
+                        <path d="M30 50 L20 45" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-bold font-cairo">FinTech<span class="text-fintech-green">Gen</span></h1>
+                <p class="text-gray-400 mt-2 text-sm">منصة الذكاء الاصطناعي المالية المتطورة</p>
+            </div>
+
+            <!-- Auth Card -->
+            <div class="glass-card rounded-2xl p-8">
+                <!-- Tabs -->
+                <div class="flex mb-6 bg-fintech-dark/50 rounded-xl p-1">
+                    <button id="loginTab" onclick="switchAuthTab('login')" class="flex-1 py-3 rounded-lg text-sm font-semibold transition tab-active" data-i18n="login">تسجيل الدخول</button>
+                    <button id="registerTab" onclick="switchAuthTab('register')" class="flex-1 py-3 rounded-lg text-sm font-semibold transition text-gray-400 hover:text-white" data-i18n="register">حساب جديد</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm" class="space-y-5">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2" data-i18n="email">البريد الإلكتروني</label>
+                        <div class="relative">
+                            <i class="fas fa-envelope absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                            <input type="email" id="loginEmail" placeholder="example@email.com" 
+                                class="w-full pr-12 pl-4 py-3 rounded-lg bg-fintech-dark border border-white/20 focus:border-fintech-green focus:outline-none transition text-white text-sm"
+                                required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2" data-i18n="password">كلمة المرور</label>
+                        <div class="relative">
+                            <i class="fas fa-lock absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                            <input type="password" id="loginPassword" placeholder="••••••••" 
+                                class="w-full pr-12 pl-4 py-3 rounded-lg bg-fintech-dark border border-white/20 focus:border-fintech-green focus:outline-none transition text-white text-sm"
+                                required>
+                            <button type="button" onclick="togglePassword('loginPassword', this)" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-fintech-green transition">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" class="w-4 h-4 rounded border-white/20 bg-fintech-dark text-fintech-green focus:ring-fintech-green">
+                            <span class="text-gray-400" data-i18n="rememberMe">تذكرني</span>
+                        </label>
+                        <a href="#" onclick="showForgotPassword()" class="text-fintech-green hover:underline" data-i18n="forgotPassword">نسيت كلمة المرور؟</a>
+                    </div>
+                    <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-fintech-green to-fintech-teal text-white font-bold text-lg hover:shadow-2xl hover:shadow-fintech-green/40 transition transform hover:scale-[1.02]">
+                        <i class="fas fa-sign-in-alt ml-2"></i><span data-i18n="enterPlatform">دخول المنصة</span>
+                    </button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="registerForm" class="space-y-5 hidden">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2" data-i18n="fullName">الاسم الكامل</label>
+                        <div class="relative">
+                            <i class="fas fa-user absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                            <input type="text" id="registerName" placeholder="أحمد محمد" 
+                                class="w-full pr-12 pl-4 py-3 rounded-lg bg-fintech-dark border border-white/20 focus:border-fintech-green focus:outline-none transition text-white text-sm"
+                                required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2" data-i18n="email">البريد الإلكتروني</label>
+                        <div class="relative">
+                            <i class="fas fa-envelope absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                            <input type="email" id="registerEmail" placeholder="example@email.com" 
+                                class="w-full pr-12 pl-4 py-3 rounded-lg bg-fintech-dark border border-white/20 focus:border-fintech-green focus:outline-none transition text-white text-sm"
+                                required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2" data-i18n="password">كلمة المرور</label>
+                        <div class="relative">
+                            <i class="fas fa-lock absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                            <input type="password" id="registerPassword" placeholder="••••••••" 
+                                class="w-full pr-12 pl-4 py-3 rounded-lg bg-fintech-dark border border-white/20 focus:border-fintech-green focus:outline-none transition text-white text-sm"
+                                required minlength="8">
+                            <button type="button" onclick="togglePassword('registerPassword', this)" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-fintech-green transition">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="mt-2">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-xs text-gray-400" data-i18n="passwordStrength">قوة كلمة المرور:</span>
+                                <span id="passwordStrength" class="text-xs font-bold" data-i18n="weak">ضعيفة</span>
+                            </div>
+                            <div class="w-full h-1.5 rounded-full bg-white/10">
+                                <div id="passwordStrengthBar" class="h-full rounded-full bg-red-500 transition-all duration-300" style="width: 20%"></div>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1" data-i18n="passwordHint">8 أحرف على الأقل، تحتوي على أرقام ورموز</p>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2" data-i18n="confirmPassword">تأكيد كلمة المرور</label>
+                        <div class="relative">
+                            <i class="fas fa-lock absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                            <input type="password" id="registerConfirmPassword" placeholder="••••••••" 
+                                class="w-full pr-12 pl-4 py-3 rounded-lg bg-fintech-dark border border-white/20 focus:border-fintech-green focus:outline-none transition text-white text-sm"
+                                required>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <input type="checkbox" id="termsCheck" class="mt-1 w-4 h-4 rounded border-white/20 bg-fintech-dark text-fintech-green focus:ring-fintech-green" required>
+                        <label for="termsCheck" class="text-xs text-gray-400">
+                            <span data-i18n="agreeTerms">أوافق على</span> <a href="#" class="text-fintech-green hover:underline" data-i18n="termsOfUse">شروط الاستخدام</a> و <a href="#" class="text-fintech-green hover:underline" data-i18n="privacyPolicy">سياسة الخصوصية</a>
+                        </label>
+                    </div>
+                    <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-fintech-green to-fintech-teal text-white font-bold text-lg hover:shadow-2xl hover:shadow-fintech-green/40 transition transform hover:scale-[1.02]">
+                        <i class="fas fa-user-plus ml-2"></i><span data-i18n="createAccount">إنشاء حساب</span>
+                    </button>
+                </form>
+
+                <!-- Forgot Password Form -->
+                <form id="forgotPasswordForm" class="space-y-5 hidden">
+                    <div class="text-center mb-4">
+                        <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-fintech-gold/20 flex items-center justify-center">
+                            <i class="fas fa-key text-fintech-gold text-xl"></i>
+                        </div>
+                        <h3 class="font-bold text-lg" data-i18n="resetPassword">استعادة كلمة المرور</h3>
+                        <p class="text-xs text-gray-400 mt-1" data-i18n="resetDesc">أدخل بريدك الإلكتروني لإرسال رابط الاستعادة</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2" data-i18n="email">البريد الإلكتروني</label>
+                        <div class="relative">
+                            <i class="fas fa-envelope absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                            <input type="email" id="forgotEmail" placeholder="example@email.com" 
+                                class="w-full pr-12 pl-4 py-3 rounded-lg bg-fintech-dark border border-white/20 focus:border-fintech-green focus:outline-none transition text-white text-sm"
+                                required>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-fintech-gold to-orange-500 text-white font-bold text-lg hover:shadow-2xl hover:shadow-fintech-gold/40 transition transform hover:scale-[1.02]">
+                        <i class="fas fa-paper-plane ml-2"></i><span data-i18n="sendReset">إرسال رابط الاستعادة</span>
+                    </button>
+                    <button type="button" onclick="switchAuthTab('login')" class="w-full py-3 text-sm text-gray-400 hover:text-white transition">
+                        <i class="fas fa-arrow-right ml-1"></i><span data-i18n="backToLogin">العودة لتسجيل الدخول</span>
+                    </button>
+                </form>
+
+                <!-- Divider -->
+                <div class="relative my-6">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-white/10"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-4 bg-[#1e3a5f] text-gray-400 rounded" data-i18n="or">أو</span>
+                    </div>
+                </div>
+
+                <!-- Social Login -->
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="socialLogin('google')" class="flex items-center justify-center gap-2 py-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition text-sm">
+                        <i class="fab fa-google text-red-400"></i>
+                        <span>Google</span>
+                    </button>
+                    <button onclick="socialLogin('apple')" class="flex items-center justify-center gap-2 py-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition text-sm">
+                        <i class="fab fa-apple text-white"></i>
+                        <span>Apple</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Security Badge -->
+            <div class="mt-6 flex items-center justify-center gap-2 text-xs text-gray-500">
+                <i class="fas fa-shield-alt text-fintech-green"></i>
+                <span data-i18n="securityBadge">تشفير AES-256 | مصادقة ثنائية | حماية بنكية</span>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-card border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-fintech-green to-fintech-teal flex items-center justify-center">
+                        <svg viewBox="0 0 100 100" class="w-8 h-8 text-white">
+                            <path d="M50 10 L90 30 L90 70 L50 90 L10 70 L10 30 Z" fill="none" stroke="currentColor" stroke-width="3"/>
+                            <path d="M50 25 L75 40 L75 60 L50 75 L25 60 L25 40 Z" fill="currentColor" opacity="0.3"/>
+                            <path d="M30 50 L50 35 L70 50 L50 65 Z" fill="currentColor"/>
+                            <path d="M50 35 L50 20" stroke="currentColor" stroke-width="2"/>
+                            <path d="M70 50 L80 45" stroke="currentColor" stroke-width="2"/>
+                            <path d="M50 65 L50 80" stroke="currentColor" stroke-width="2"/>
+                            <path d="M30 50 L20 45" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-bold font-cairo">FinTech<span class="text-fintech-green">Gen</span></span>
+                </div>
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#features" class="text-sm text-gray-300 hover:text-fintech-green transition" data-i18n="features">المميزات</a>
+                    <a href="#dashboard" class="text-sm text-gray-300 hover:text-fintech-green transition" data-i18n="dashboard">لوحة التحكم</a>
+                    <a href="#ai-analysis" class="text-sm text-gray-300 hover:text-fintech-green transition" data-i18n="aiAnalysis">التحليل الذكي</a>
+                    <a href="#savings" class="text-sm text-gray-300 hover:text-fintech-green transition" data-i18n="savings">خطط الادخار</a>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleLanguage()" class="px-3 py-1 rounded-full border border-fintech-green/30 text-fintech-green text-sm hover:bg-fintech-green/10 transition font-inter" id="langToggleBtn">
+                        EN
+                    </button>
+                    <button id="navLoginBtn" onclick="openDashboard()" class="px-4 py-2 rounded-lg bg-gradient-to-r from-fintech-green to-fintech-teal text-white text-sm font-semibold hover:shadow-lg hover:shadow-fintech-green/30 transition pulse-glow">
+                        <i class="fas fa-user-circle ml-2"></i>دخول المنصة
+                    </button>
+                    <button id="navLogoutBtn" onclick="logout()" class="hidden px-4 py-2 rounded-lg border border-red-500/50 text-red-400 text-sm font-semibold hover:bg-red-500/20 hover:text-red-300 transition">
+                        <i class="fas fa-sign-out-alt ml-2"></i>تسجيل الخروج
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-bg min-h-screen flex items-center pt-16 relative overflow-hidden">
+        <div class="absolute inset-0 grid-pattern"></div>
+        <div class="absolute top-20 right-10 w-72 h-72 bg-fintech-green/20 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-20 left-10 w-96 h-96 bg-fintech-teal/10 rounded-full blur-3xl"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="text-center lg:text-right">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-fintech-green/10 border border-fintech-green/30 mb-6">
+                        <span class="w-2 h-2 rounded-full bg-fintech-green animate-pulse"></span>
+                        <span class="text-fintech-green text-sm font-semibold" data-i18n="heroBadge">الجيل القادم من الذكاء المالي</span>
+                    </div>
+                    <h1 class="text-4xl md:text-6xl font-bold font-cairo leading-tight mb-6">
+                        <span data-i18n="heroTitle1">ذكاء اصطناعي يفهم</span><br>
+                        <span class="gradient-text" data-i18n="heroTitle2">ماليتك</span> <span data-i18n="heroTitle3">ويحللها</span>
+                    </h1>
+                    <p class="text-lg text-gray-400 mb-8 leading-relaxed max-w-xl" data-i18n="heroDesc">منصة ذكاء اصطناعي متطورة تولد تقارير مالية واستشارية مخصصة وفورية بناءً على تحليل سلوكك المالي وبيانات السوق اللحظية</p>
+                    <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
+                        <button onclick="openDashboard()" class="px-8 py-4 rounded-xl bg-gradient-to-r from-fintech-green to-fintech-teal text-white font-bold text-lg hover:shadow-2xl hover:shadow-fintech-green/40 transition transform hover:scale-105">
+                            <span data-i18n="startNow">ابدأ الآن</span>
+                            <i class="fas fa-arrow-left mr-2"></i>
+                        </button>
+                        <button onclick="scrollToSection('ai-analysis')" class="px-8 py-4 rounded-xl border border-white/20 text-white font-bold text-lg hover:bg-white/5 transition">
+                            <i class="fas fa-play ml-2"></i><span data-i18n="watchDemo">شاهد العرض</span>
+                        </button>
+                    </div>
+                    <div class="mt-12 flex items-center gap-8 justify-center lg:justify-start">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-fintech-green number-counter" data-target="50000">0</div>
+                            <div class="text-sm text-gray-500" data-i18n="activeUsers">مستخدم نشط</div>
+                        </div>
+                        <div class="w-px h-12 bg-white/20"></div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-fintech-gold number-counter" data-target="98">0</div>
+                            <div class="text-sm text-gray-500" data-i18n="predictionAccuracy">% دقة التنبؤ</div>
+                        </div>
+                        <div class="w-px h-12 bg-white/20"></div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-fintech-teal number-counter" data-target="12">0</div>
+                            <div class="text-sm text-gray-500" data-i18n="savedAmount">مليون دولار تم توفيره</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative floating">
+                    <div class="relative z-10">
+                        <div class="glass-card rounded-2xl p-6 transform rotate-3 hover:rotate-0 transition duration-500">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                </div>
+                                <span class="text-xs text-gray-400">FinTechGen AI Dashboard</span>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-lg bg-fintech-green/20 flex items-center justify-center">
+                                            <i class="fas fa-chart-line text-fintech-green"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-semibold">تحليل المحفظة</div>
+                                            <div class="text-xs text-gray-400">تم التحديث للتو</div>
+                                        </div>
+                                    </div>
+                                    <span class="text-fintech-green font-bold">+12.5%</span>
+                                </div>
+                                <div class="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-lg bg-fintech-gold/20 flex items-center justify-center">
+                                            <i class="fas fa-shield-alt text-fintech-gold"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-semibold">مؤشر المخاطر</div>
+                                            <div class="text-xs text-gray-400">منخفض - آمن</div>
+                                        </div>
+                                    </div>
+                                    <span class="text-fintech-gold font-bold">23/100</span>
+                                </div>
+                                <div class="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-lg bg-fintech-teal/20 flex items-center justify-center">
+                                            <i class="fas fa-piggy-bank text-fintech-teal"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-semibold">خطة الادخار</div>
+                                            <div class="text-xs text-gray-400">85% من الهدف</div>
+                                        </div>
+                                    </div>
+                                    <span class="text-fintech-teal font-bold">$8,500</span>
+                                </div>
+                                <div class="p-4 rounded-lg bg-gradient-to-r from-fintech-green/20 to-fintech-teal/20 border border-fintech-green/30">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <i class="fas fa-robot text-fintech-green"></i>
+                                        <span class="text-sm font-semibold">توصية الذكاء الاصطناعي</span>
+                                    </div>
+                                    <p class="text-xs text-gray-300 leading-relaxed">
+                                        بناءً على تحليل سلوكك المالي، أنصحك بزيادة استثمارك في صناديق التكنولوجيا بنسبة 15% وتقليل التعرض للعملات الرقمية.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute -top-4 -right-4 w-24 h-24 bg-fintech-gold/30 rounded-full blur-2xl"></div>
+                    <div class="absolute -bottom-4 -left-4 w-32 h-32 bg-fintech-green/30 rounded-full blur-2xl"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Market Ticker -->
+    <div class="bg-fintech-blue/50 border-y border-white/10 overflow-hidden py-3">
+        <div class="flex whitespace-nowrap">
+            <div class="market-ticker flex gap-8 items-center" id="marketTicker"></div>
+            <div class="market-ticker flex gap-8 items-center" id="marketTicker2"></div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 slide-in">
+                <span class="text-fintech-green font-semibold text-sm uppercase tracking-wider" data-i18n="featuresTitle">المميزات الرئيسية</span>
+                <h2 class="text-3xl md:text-4xl font-bold font-cairo mt-3 mb-4" data-i18n="featuresSubtitle">كل ما تحتاجه لإدارة ماليتك بذكاء</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto" data-i18n="featuresDesc">تقنيات متطورة تعمل معاً لتقديم تجربة مالية شاملة وآمنة</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="glass-card rounded-2xl p-6 slide-in hover:border-fintech-green/50 transition duration-300">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-fintech-green/20 to-fintech-teal/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-brain text-2xl text-fintech-green"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3" data-i18n="feat1Title">تحليل سلوكي ذكي</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed" data-i18n="feat1Desc">يحلل الذكاء الاصطناعي أنماط إنفاقك وادخارك تلقائياً ليقدم لك رؤى دقيقة عن عاداتك المالية</p>
+                </div>
+                <div class="glass-card rounded-2xl p-6 slide-in hover:border-fintech-gold/50 transition duration-300">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-fintech-gold/20 to-orange-500/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-bolt text-2xl text-fintech-gold"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3" data-i18n="feat2Title">بيانات لحظية</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed" data-i18n="feat2Desc">ربط مباشر مع الأسواق المالية العالمية لتقديم تحديثات فورية عن الأسعار والتقلبات</p>
+                </div>
+                <div class="glass-card rounded-2xl p-6 slide-in hover:border-fintech-teal/50 transition duration-300">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-fintech-teal/20 to-cyan-500/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-file-alt text-2xl text-fintech-teal"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3" data-i18n="feat3Title">تقارير مولدة تلقائياً</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed" data-i18n="feat3Desc">تقارير مالية شاملة ومخصصة تُولد بالذكاء الاصطناعي بضغطة زر واحدة</p>
+                </div>
+                <div class="glass-card rounded-2xl p-6 slide-in hover:border-red-500/50 transition duration-300">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-red-500/20 to-orange-500/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-exclamation-triangle text-2xl text-red-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3" data-i18n="feat4Title">تنبؤ بالمخاطر</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed" data-i18n="feat4Desc">نماذج تنبؤية متقدمة تحذرك من المخاطر المستقبلية قبل حدوثها</p>
+                </div>
+                <div class="glass-card rounded-2xl p-6 slide-in hover:border-fintech-green/50 transition duration-300">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-fintech-green/20 to-emerald-500/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-piggy-bank text-2xl text-fintech-green"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3" data-i18n="feat5Title">خطط ادخار مرنة</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed" data-i18n="feat5Desc">خطط ادخار تتكيف تلقائياً مع دخلك ونفقاتك لتحقيق أهدافك المالية</p>
+                </div>
+                <div class="glass-card rounded-2xl p-6 slide-in hover:border-blue-500/50 transition duration-300">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-lock text-2xl text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3" data-i18n="feat6Title">أمان بنكي</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed" data-i18n="feat6Desc">تشفير من الطراز الأول وتقنيات حماية متعددة الطبقات لبياناتك المالية</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Preview Section -->
+    <section id="dashboard" class="py-20 bg-gradient-to-b from-fintech-dark to-fintech-blue/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 slide-in">
+                <span class="text-fintech-teal font-semibold text-sm uppercase tracking-wider" data-i18n="dashboardTitle">لوحة التحكم</span>
+                <h2 class="text-3xl md:text-4xl font-bold font-cairo mt-3" data-i18n="dashboardSubtitle">جرب لوحة التحكم التفاعلية</h2>
+            </div>
+
+            <div class="glass-card rounded-2xl overflow-hidden slide-in">
+                <div class="flex flex-col lg:flex-row">
+                    <!-- Sidebar -->
+                    <div class="lg:w-64 bg-fintech-dark/50 border-l border-white/10 p-4">
+                        <div class="flex items-center gap-3 mb-8 p-2">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-fintech-green to-fintech-teal flex items-center justify-center text-white font-bold" id="sidebarAvatar">
+                                أ
+                            </div>
+                            <div>
+                                <div class="font-semibold text-sm" id="sidebarUserName">أحمد محمد</div>
+                            </div>
+                        </div>
+                        <nav class="space-y-1">
+                            <a href="#" class="sidebar-item active flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition">
+                                <i class="fas fa-chart-pie w-5"></i><span data-i18n="overview">نظرة عامة</span>
+                            </a>
+                            <a href="#" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white transition">
+                                <i class="fas fa-wallet w-5"></i><span data-i18n="myWallet">محفظتي</span>
+                            </a>
+                            <a href="#" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white transition">
+                                <i class="fas fa-robot w-5"></i><span data-i18n="aiInsights">التحليل الذكي</span>
+                            </a>
+                            <a href="#" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white transition">
+                                <i class="fas fa-bullseye w-5"></i><span data-i18n="goals">الأهداف</span>
+                            </a>
+                            <a href="#" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white transition">
+                                <i class="fas fa-file-invoice w-5"></i><span data-i18n="reports">التقارير</span>
+                            </a>
+                            <a href="#" class="sidebar-item flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white transition">
+                                <i class="fas fa-cog w-5"></i><span data-i18n="settings">الإعدادات</span>
+                            </a>
+                        </nav>
+                        <!-- Premium plan removed as requested -->
+                    </div>
+
+                    <!-- Main Content -->
+                    <div class="flex-1 p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-2xl font-bold" data-i18n="portfolioOverview">نظرة عامة على المحفظة</h3>
+                                <p class="text-sm text-gray-400"><span data-i18n="lastUpdate">آخر تحديث:</span> <span id="lastUpdate" data-i18n="now">الآن</span></p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="updateDashboard()" class="px-4 py-2 rounded-lg bg-fintech-green/20 text-fintech-green text-sm hover:bg-fintech-green/30 transition">
+                                    <i class="fas fa-sync-alt ml-1"></i><span data-i18n="refresh">تحديث</span>
+                                </button>
+                                <button class="px-4 py-2 rounded-lg bg-white/5 text-sm hover:bg-white/10 transition">
+                                    <i class="fas fa-download ml-1"></i><span data-i18n="export">تصدير</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Stats Cards -->
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                            <div class="glass-card rounded-xl p-4">
+                                <div class="text-sm text-gray-400 mb-1" data-i18n="totalAssets">إجمالي الأصول</div>
+                                <div class="text-2xl font-bold" id="totalAssets">$45,230</div>
+                                <div class="text-sm text-fintech-green mt-1">
+                                    <i class="fas fa-arrow-up"></i> +8.2%
+                                </div>
+                            </div>
+                            <div class="glass-card rounded-xl p-4">
+                                <div class="text-sm text-gray-400 mb-1" data-i18n="monthlyReturn">العائد الشهري</div>
+                                <div class="text-2xl font-bold text-fintech-green" id="monthlyReturn">+$1,240</div>
+                                <div class="text-sm text-gray-400 mt-1" data-i18n="thisMonth">هذا الشهر</div>
+                            </div>
+                            <div class="glass-card rounded-xl p-4">
+                                <div class="text-sm text-gray-400 mb-1" data-i18n="riskIndex">مؤشر المخاطر</div>
+                                <div class="text-2xl font-bold text-fintech-gold" id="riskIndex">23/100</div>
+                                <div class="text-sm text-fintech-green mt-1" data-i18n="low">منخفض</div>
+                            </div>
+                            <div class="glass-card rounded-xl p-4">
+                                <div class="text-sm text-gray-400 mb-1" data-i18n="savingsTarget">الادخار المستهدف</div>
+                                <div class="text-2xl font-bold text-fintech-teal" id="savingsTarget">85%</div>
+                                <div class="text-sm text-gray-400 mt-1" data-i18n="annualGoal">من الهدف السنوي</div>
+                            </div>
+                        </div>
+
+                        <!-- Charts -->
+                        <div class="grid lg:grid-cols-2 gap-6 mb-6">
+                            <div class="glass-card rounded-xl p-4">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h4 class="font-semibold" data-i18n="portfolioPerformance">أداء المحفظة</h4>
+                                    <select class="bg-fintech-dark border border-white/20 rounded-lg px-2 py-1 text-xs">
+                                        <option data-i18n="months6">6 أشهر</option>
+                                        <option data-i18n="year">سنة</option>
+                                        <option data-i18n="all">الكل</option>
+                                    </select>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="portfolioChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="glass-card rounded-xl p-4">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h4 class="font-semibold" data-i18n="assetAllocation">توزيع الأصول</h4>
+                                    <button class="text-xs text-fintech-green hover:underline" data-i18n="rebalance">إعادة التوازن</button>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="allocationChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- AI Insights -->
+                        <div class="glass-card rounded-xl p-4 border border-fintech-green/30">
+                            <div class="flex items-center gap-2 mb-3">
+                                <div class="w-8 h-8 rounded-full bg-fintech-green/20 flex items-center justify-center">
+                                    <i class="fas fa-robot text-fintech-green text-sm"></i>
+                                </div>
+                                <h4 class="font-semibold" data-i18n="aiInsightsTitle">رؤى الذكاء الاصطناعي</h4>
+                                <span class="px-2 py-0.5 rounded-full bg-fintech-green/20 text-fintech-green text-xs" data-i18n="new">جديد</span>
+                            </div>
+                            <div class="space-y-3" id="aiInsights">
+                                <div class="flex items-start gap-3 p-3 rounded-lg bg-white/5">
+                                    <i class="fas fa-lightbulb text-fintech-gold mt-1"></i>
+                                    <div>
+                                        <div class="text-sm font-semibold mb-1" data-i18n="investmentOpportunity">فرصة استثمارية</div>
+                                        <p class="text-xs text-gray-400" data-i18n="opportunityDesc">القطاع التكنولوجي يشهد نمواً بنسبة 15%، يُنصح بزيادة الوزن النسبي في المحفظة.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3 p-3 rounded-lg bg-white/5">
+                                    <i class="fas fa-exclamation-circle text-red-400 mt-1"></i>
+                                    <div>
+                                        <div class="text-sm font-semibold mb-1" data-i18n="riskAlert">تنبيه مخاطر</div>
+                                        <p class="text-xs text-gray-400" data-i18n="riskAlertDesc">ارتفاع التقلب في سوق العملات الرقمية، يُفضل تقليل التعرض مؤقتاً.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Analysis Section -->
+    <section id="ai-analysis" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 slide-in">
+                <span class="text-fintech-green font-semibold text-sm uppercase tracking-wider" data-i18n="aiAnalysisTitle">التحليل الذكي</span>
+                <h2 class="text-3xl md:text-4xl font-bold font-cairo mt-3 mb-4" data-i18n="aiAnalysisSubtitle">جرب محاكاة التحليل المالي الذكي</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto" data-i18n="aiAnalysisDesc">أدخل بياناتك المالية لتحصل على تحليل فوري وتوصيات مخصصة</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Input Form -->
+                <div class="glass-card rounded-2xl p-6 slide-in">
+                    <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                        <i class="fas fa-sliders-h text-fintech-green"></i>
+                        <span data-i18n="yourData">بياناتك المالية</span>
+                    </h3>
+                    <form id="analysisForm" class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-2" data-i18n="monthlyIncome">الدخل الشهري ($)</label>
+                                <input type="number" id="income" value="5000" class="w-full px-4 py-3 rounded-lg bg-fintech-dark border border-white/20 focus:border-fintech-green focus:outline-none transition text-white">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-2" data-i18n="monthlyExpenses">النفقات الشهرية ($)</label>
+                                <input type="number" id="expenses" value="3500" class="w-full px-4 py-3 rounded-lg bg-fintech-dark border border-white/20 focus:border-fintech-green focus:outline-none transition text-white">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-2" data-i18n="currentSavings">المدخرات الحالية ($)</label>
+                                <input type="number" id="savings" value="15000" class="w-full px-4 py-3 rounded-lg bg-fintech-dark border border-white/20 focus:border-fintech-green focus:outline-none transition text-white">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-2" data-i18n="debts">الديون ($)</label>
+                                <input type="number" id="debts" value="5000" class="w-full px-4 py-3 rounded-lg bg-fintech-dark border border-white/20 focus:border-fintech-green focus:outline-none transition text-white">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2" data-i18n="riskLevel">مستوى المخاطرة المفضل</label>
+                            <div class="flex gap-2">
+                                <button type="button" onclick="setRisk('conservative')" class="risk-btn flex-1 py-2 rounded-lg border border-white/20 text-sm hover:bg-fintech-green/20 transition" data-risk="conservative" data-i18n="conservative">محافظ</button>
+                                <button type="button" onclick="setRisk('moderate')" class="risk-btn flex-1 py-2 rounded-lg border border-fintech-green bg-fintech-green/20 text-sm transition" data-risk="moderate" data-i18n="moderate">معتدل</button>
+                                <button type="button" onclick="setRisk('aggressive')" class="risk-btn flex-1 py-2 rounded-lg border border-white/20 text-sm hover:bg-fintech-green/20 transition" data-risk="aggressive" data-i18n="aggressive">جريء</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2" data-i18n="financialGoal">الهدف المالي</label>
+                            <select id="goal" class="w-full px-4 py-3 rounded-lg bg-fintech-dark border border-white/20 focus:border-fintech-green focus:outline-none transition text-white">
+                                <option value="retirement" data-i18n="retirement">التقاعد المبكر</option>
+                                <option value="house" data-i18n="house">شراء منزل</option>
+                                <option value="education" data-i18n="education">تعليم الأطفال</option>
+                                <option value="travel" data-i18n="travel">سفر واستكشاف</option>
+                                <option value="business" data-i18n="business">بدء مشروع</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-fintech-green to-fintech-teal text-white font-bold text-lg hover:shadow-lg hover:shadow-fintech-green/30 transition transform hover:scale-[1.02]">
+                            <i class="fas fa-magic ml-2"></i><span data-i18n="analyzeBtn">حلل بياناتي</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Results -->
+                <div class="glass-card rounded-2xl p-6 slide-in relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-fintech-green/10 rounded-full blur-3xl"></div>
+                    <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                        <i class="fas fa-chart-bar text-fintech-teal"></i>
+                        <span data-i18n="analysisResults">نتائج التحليل</span>
+                    </h3>
+                    <div id="analysisResults" class="space-y-6">
+                        <div class="text-center py-12 text-gray-500">
+                            <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-white/5 flex items-center justify-center">
+                                <i class="fas fa-robot text-2xl"></i>
+                            </div>
+                            <p data-i18n="enterDataPrompt">أدخل بياناتك واضغط "حلل بياناتي" للحصول على التحليل</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Risk Prediction Section -->
+    <section class="py-20 bg-gradient-to-b from-fintech-blue/30 to-fintech-dark">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 slide-in">
+                <span class="text-fintech-gold font-semibold text-sm uppercase tracking-wider" data-i18n="riskPredictionTitle">التنبؤ بالمخاطر</span>
+                <h2 class="text-3xl md:text-4xl font-bold font-cairo mt-3 mb-4" data-i18n="riskPredictionSubtitle">مؤشر المخاطر المستقبلية</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto" data-i18n="riskPredictionDesc">نموذج تنبؤي يحلل احتمالية المخاطر المالية المستقبلية بناءً على بياناتك</p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="glass-card rounded-2xl p-6 slide-in flex flex-col items-center">
+                    <h3 class="text-lg font-bold mb-4" data-i18n="currentRiskIndex">مؤشر المخاطر الحالي</h3>
+                    <div class="risk-meter mb-4">
+                        <div class="risk-needle" id="riskNeedle" style="transform: translateX(-50%) rotate(-90deg);"></div>
+                        <div class="relative z-10 text-center">
+                            <div class="text-3xl font-bold" id="riskScore">23</div>
+                            <div class="text-xs text-gray-400" data-i18n="outOf100">من 100</div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <span class="px-3 py-1 rounded-full bg-fintech-green/20 text-fintech-green text-sm font-semibold">مخاطر منخفضة</span>
+                    </div>
+                    <div class="mt-4 text-xs text-gray-400 text-center" data-i18n="dailyUpdate">يتم تحديث المؤشر يومياً بناءً على تقلبات السوق</div>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 slide-in">
+                    <h3 class="text-lg font-bold mb-4" data-i18n="riskFactors">عوامل المخاطر الرئيسية</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span data-i18n="marketVolatility">تقلب السوق</span>
+                                <span class="text-fintech-green">15%</span>
+                            </div>
+                            <div class="w-full h-2 rounded-full bg-white/10">
+                                <div class="h-full rounded-full bg-fintech-green progress-bar" style="width: 15%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span data-i18n="debtRatio">نسبة الديون</span>
+                                <span class="text-fintech-gold">35%</span>
+                            </div>
+                            <div class="w-full h-2 rounded-full bg-white/10">
+                                <div class="h-full rounded-full bg-fintech-gold progress-bar" style="width: 35%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span data-i18n="assetDiversity">تنوع الأصول</span>
+                                <span class="text-fintech-teal">78%</span>
+                            </div>
+                            <div class="w-full h-2 rounded-full bg-white/10">
+                                <div class="h-full rounded-full bg-fintech-teal progress-bar" style="width: 78%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span data-i18n="emergencyFund">مخزن الطوارئ</span>
+                                <span class="text-fintech-green">62%</span>
+                            </div>
+                            <div class="w-full h-2 rounded-full bg-white/10">
+                                <div class="h-full rounded-full bg-fintech-green progress-bar" style="width: 62%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span data-i18n="incomeStability">استقرار الدخل</span>
+                                <span class="text-fintech-gold">45%</span>
+                            </div>
+                            <div class="w-full h-2 rounded-full bg-white/10">
+                                <div class="h-full rounded-full bg-fintech-gold progress-bar" style="width: 45%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 slide-in">
+                    <h3 class="text-lg font-bold mb-4" data-i18n="futureScenarios">سيناريوهات المستقبل</h3>
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-xl bg-fintech-green/10 border border-fintech-green/30">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-arrow-up text-fintech-green"></i>
+                                <span class="font-semibold text-sm" data-i18n="positiveScenario">السيناريو الإيجابي</span>
+                                <span class="mr-auto text-xs text-fintech-green" data-i18n="positiveProb">65% احتمالية</span>
+                            </div>
+                            <p class="text-xs text-gray-400" data-i18n="positiveDesc">نمو المحفظة بنسبة 12% سنوياً مع الالتزام بالخطة المقترحة</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-fintech-gold/10 border border-fintech-gold/30">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-minus text-fintech-gold"></i>
+                                <span class="font-semibold text-sm" data-i18n="neutralScenario">السيناريو المحايد</span>
+                                <span class="mr-auto text-xs text-fintech-gold" data-i18n="neutralProb">25% احتمالية</span>
+                            </div>
+                            <p class="text-xs text-gray-400" data-i18n="neutralDesc">استقرار نسبي مع عائد 5% سنوياً</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-red-500/10 border border-red-500/30">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-arrow-down text-red-400"></i>
+                                <span class="font-semibold text-sm" data-i18n="negativeScenario">السيناريو السلبي</span>
+                                <span class="mr-auto text-xs text-red-400" data-i18n="negativeProb">10% احتمالية</span>
+                            </div>
+                            <p class="text-xs text-gray-400" data-i18n="negativeDesc">تراجع محتمل بنسبة 8% في حالة ركود اقتصادي</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Savings Plans Section -->
+    <section id="savings" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 slide-in">
+                <span class="text-fintech-teal font-semibold text-sm uppercase tracking-wider" data-i18n="savingsTitle">خطط الادخار</span>
+                <h2 class="text-3xl md:text-4xl font-bold font-cairo mt-3 mb-4" data-i18n="savingsSubtitle">خطط ادخار مرنة ومخصصة</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto" data-i18n="savingsDesc">خطط تتكيف تلقائياً مع دخلك ونفقاتك لتحقيق أهدافك المالية</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="saving-plan-card glass-card rounded-2xl p-6 slide-in border-t-4 border-fintech-green">
+                    <div class="w-12 h-12 rounded-xl bg-fintech-green/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-shield-alt text-2xl text-fintech-green"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2" data-i18n="emergencyPlan">خطة الطوارئ</h3>
+                    <p class="text-gray-400 text-sm mb-4" data-i18n="emergencyDesc">ادخار 6 أشهر من النفقات الأساسية للحماية من المفاجآت</p>
+                    <div class="mb-4">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span data-i18n="progress">التقدم</span>
+                            <span class="text-fintech-green">72%</span>
+                        </div>
+                        <div class="w-full h-3 rounded-full bg-white/10">
+                            <div class="h-full rounded-full bg-gradient-to-r from-fintech-green to-fintech-teal progress-bar" style="width: 72%"></div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-sm text-gray-400"><span data-i18n="target">المستهدف:</span> $21,000</span>
+                        <span class="text-sm font-bold">$15,120</span>
+                    </div>
+                    <button class="w-full py-3 rounded-lg border border-fintech-green text-fintech-green font-semibold hover:bg-fintech-green hover:text-white transition" data-i18n="planDetails">تفاصيل الخطة</button>
+                </div>
+
+                <div class="saving-plan-card glass-card rounded-2xl p-6 slide-in border-t-4 border-fintech-gold">
+                    <div class="w-12 h-12 rounded-xl bg-fintech-gold/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-home text-2xl text-fintech-gold"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2" data-i18n="houseFund">صندوق المنزل</h3>
+                    <p class="text-gray-400 text-sm mb-4" data-i18n="houseDesc">ادخار مقدم شراء منزل بنسبة 20% من القيمة</p>
+                    <div class="mb-4">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span data-i18n="progress">التقدم</span>
+                            <span class="text-fintech-gold">45%</span>
+                        </div>
+                        <div class="w-full h-3 rounded-full bg-white/10">
+                            <div class="h-full rounded-full bg-gradient-to-r from-fintech-gold to-orange-500 progress-bar" style="width: 45%"></div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-sm text-gray-400">المستهدف: $80,000</span>
+                        <span class="text-sm font-bold">$36,000</span>
+                    </div>
+                    <button class="w-full py-3 rounded-lg border border-fintech-gold text-fintech-gold font-semibold hover:bg-fintech-gold hover:text-white transition">
+                        تفاصيل الخطة
+                    </button>
+                </div>
+
+                <div class="saving-plan-card glass-card rounded-2xl p-6 slide-in border-t-4 border-fintech-teal">
+                    <div class="w-12 h-12 rounded-xl bg-fintech-teal/20 flex items-center justify-center mb-4">
+                        <i class="fas fa-umbrella-beach text-2xl text-fintech-teal"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2" data-i18n="earlyRetirement">التقاعد المبكر</h3>
+                    <p class="text-gray-400 text-sm mb-4" data-i18n="retirementDesc">خطة استثمار طويلة المدى للاستقلال المالي المبكر</p>
+                    <div class="mb-4">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span data-i18n="progress">التقدم</span>
+                            <span class="text-fintech-teal">28%</span>
+                        </div>
+                        <div class="w-full h-3 rounded-full bg-white/10">
+                            <div class="h-full rounded-full bg-gradient-to-r from-fintech-teal to-cyan-500 progress-bar" style="width: 28%"></div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-sm text-gray-400">المستهدف: $500,000</span>
+                        <span class="text-sm font-bold">$140,000</span>
+                    </div>
+                    <button class="w-full py-3 rounded-lg border border-fintech-teal text-fintech-teal font-semibold hover:bg-fintech-teal hover:text-white transition">
+                        تفاصيل الخطة
+                    </button>
+                </div>
+            </div>
+
+            <!-- AI Savings Calculator -->
+            <div class="mt-12 glass-card rounded-2xl p-6 slide-in">
+                <div class="flex flex-col lg:flex-row gap-8 items-center">
+                    <div class="lg:w-1/2">
+                        <h3 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                            <i class="fas fa-calculator text-fintech-green"></i>
+                            <span data-i18n="smartCalculator">حاسبة الادخار الذكية</span>
+                        </h3>
+                        <p class="text-gray-400 mb-6" data-i18n="calculatorDesc">أدخل دخلك الشهري لنقترح لك خطة ادخار مثالية تتكيف مع وضعك المالي</p>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-2" data-i18n="monthlyIncome">الدخل الشهري ($)</label>
+                                <input type="range" id="incomeSlider" min="1000" max="20000" value="5000" class="w-full h-2 rounded-full bg-white/20 appearance-none cursor-pointer accent-fintech-green">
+                                <div class="flex justify-between text-sm mt-1">
+                                    <span>$1,000</span>
+                                    <span id="incomeValue" class="text-fintech-green font-bold">$5,000</span>
+                                    <span>$20,000</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-2" data-i18n="suggestedRate">نسبة الادخار المقترحة</label>
+                                <div class="flex items-center gap-4">
+                                    <div class="flex-1 h-2 rounded-full bg-white/10">
+                                        <div id="savingsBar" class="h-full rounded-full bg-gradient-to-r from-fintech-green to-fintech-teal transition-all duration-500" style="width: 20%"></div>
+                                    </div>
+                                    <span id="savingsPercent" class="text-fintech-green font-bold">20%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:w-1/2 glass-card rounded-xl p-6 bg-gradient-to-br from-fintech-green/10 to-fintech-teal/10">
+                        <div class="text-center mb-4">
+                            <div class="text-sm text-gray-400 mb-1" data-i18n="suggestedAmount">المبلغ المقترح للادخار شهرياً</div>
+                            <div class="text-4xl font-bold text-fintech-green" id="monthlySavings">$1,000</div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mt-4">
+                            <div class="text-center p-3 rounded-lg bg-white/5">
+                                <div class="text-xs text-gray-400" data-i18n="after1Year">بعد سنة</div>
+                                <div class="text-lg font-bold text-fintech-teal" id="year1">$12,600</div>
+                            </div>
+                            <div class="text-center p-3 rounded-lg bg-white/5">
+                                <div class="text-xs text-gray-400" data-i18n="after5Years">بعد 5 سنوات</div>
+                                <div class="text-lg font-bold text-fintech-gold" id="year5">$69,000</div>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-xs text-gray-400 text-center" data-i18n="includesReturn">*الحسابات تشمل عائد سنوي متوقع 5%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Chat Assistant -->
+    <section class="py-20 bg-gradient-to-b from-fintech-dark to-fintech-blue/30">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 slide-in">
+                <span class="text-fintech-green font-semibold text-sm uppercase tracking-wider" data-i18n="smartAssistant">المساعد الذكي</span>
+                <h2 class="text-3xl md:text-4xl font-bold font-cairo mt-3 mb-4" data-i18n="chatTitle">تحدث مع مستشارك المالي الذكي</h2>
+            </div>
+
+            <div class="glass-card rounded-2xl overflow-hidden slide-in">
+                <div class="bg-fintech-dark/50 p-4 border-b border-white/10 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-fintech-green to-fintech-teal flex items-center justify-center">
+                        <i class="fas fa-robot text-white"></i>
+                    </div>
+                    <div>
+                        <div class="font-semibold text-sm" data-i18n="aiAssistantName">FinTechGen AI Assistant</div>
+                        <div class="flex items-center gap-1 text-xs text-fintech-green">
+                            <span class="w-2 h-2 rounded-full bg-fintech-green animate-pulse"></span>
+                            <span data-i18n="online">متصل الآن</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="h-96 overflow-y-auto p-4 space-y-4" id="chatMessages">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-fintech-green to-fintech-teal flex items-center justify-center flex-shrink-0 mt-1">
+                            <i class="fas fa-robot text-white text-xs"></i>
+                        </div>
+                        <div class="glass-card rounded-2xl rounded-tr-none p-3 max-w-[80%]">
+                            <p class="text-sm" data-i18n="chatWelcome">مرحباً! أنا مساعدك المالي الذكي. كيف يمكنني مساعدتك اليوم؟ يمكنني تحليل استثماراتك، اقتراح خطط ادخار، أو الإجابة على أسئلتك المالية.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 border-t border-white/10">
+                    <div class="flex gap-2">
+                        <input type="text" id="chatInput" placeholder="اكتب سؤالك هنا..." data-i18n-placeholder="chatPlaceholder" class="flex-1 px-4 py-3 rounded-lg bg-fintech-dark border border-white/20 focus:border-fintech-green focus:outline-none transition text-white text-sm">
+                        <button onclick="sendMessage()" class="px-6 py-3 rounded-lg bg-gradient-to-r from-fintech-green to-fintech-teal text-white font-semibold hover:shadow-lg transition">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div class="flex gap-2 mt-2">
+                        <button onclick="quickQuestion('كيف أبدأ الاستثمار؟')" data-i18n="howToInvest" class="px-3 py-1 rounded-full bg-white/5 text-xs text-gray-400 hover:bg-white/10 transition">كيف أبدأ الاستثمار؟</button>
+                        <button onclick="quickQuestion('ما أفضل خطة ادخار؟')" data-i18n="bestSavings" class="px-3 py-1 rounded-full bg-white/5 text-xs text-gray-400 hover:bg-white/10 transition">ما أفضل خطة ادخار؟</button>
+                        <button onclick="quickQuestion('حلل مخاطري')" data-i18n="analyzeRisk" class="px-3 py-1 rounded-full bg-white/5 text-xs text-gray-400 hover:bg-white/10 transition">حلل مخاطري</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-fintech-dark border-t border-white/10 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8 mb-12">
+                <div class="md:col-span-1">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-fintech-green to-fintech-teal flex items-center justify-center">
+                            <svg viewBox="0 0 100 100" class="w-6 h-6 text-white">
+                                <path d="M50 10 L90 30 L90 70 L50 90 L10 70 L10 30 Z" fill="none" stroke="currentColor" stroke-width="3"/>
+                                <path d="M50 25 L75 40 L75 60 L50 75 L25 60 L25 40 Z" fill="currentColor" opacity="0.3"/>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-bold">FinTech<span class="text-fintech-green">Gen</span></span>
+                    </div>
+                    <p class="text-sm text-gray-400 leading-relaxed">منصة الذكاء الاصطناعي المالية المتطورة لتحليل بياناتك المالية وتقديم توصيات مخصصة.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4" data-i18n="product">المنتج</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-fintech-green transition">التحليل الذكي</a></li>
+                        <li><a href="#" class="hover:text-fintech-green transition">التقارير المالية</a></li>
+                        <li><a href="#" class="hover:text-fintech-green transition">خطط الادخار</a></li>
+                        <li><a href="#" class="hover:text-fintech-green transition">التنبؤ بالمخاطر</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4" data-i18n="company">الشركة</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-fintech-green transition" data-i18n="aboutUs">من نحن</a></li>
+                        <li><a href="#" class="hover:text-fintech-green transition" data-i18n="blog">المدونة</a></li>
+                        <li><a href="#" class="hover:text-fintech-green transition" data-i18n="careers">الوظائف</a></li>
+                        <li><a href="#" class="hover:text-fintech-green transition" data-i18n="contact">اتصل بنا</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4" data-i18n="support">الدعم</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-fintech-green transition" data-i18n="helpCenter">مركز المساعدة</a></li>
+                        <li><a href="#" class="hover:text-fintech-green transition" data-i18n="security">الأمان</a></li>
+                        <li><a href="#" class="hover:text-fintech-green transition" data-i18n="privacy">الخصوصية</a></li>
+                        <li><a href="#" class="hover:text-fintech-green transition" data-i18n="terms">الشروط</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="text-sm text-gray-400">© 2026 FinTechGen. <span data-i18n="rights">جميع الحقوق محفوظة.</span></div>
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-fintech-green/20 hover:text-fintech-green transition">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-fintech-green/20 hover:text-fintech-green transition">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-fintech-green/20 hover:text-fintech-green transition">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-4 left-4 z-50 hidden">
+        <div class="glass-card rounded-xl p-4 flex items-center gap-3 notification">
+            <div class="w-8 h-8 rounded-full bg-fintech-green/20 flex items-center justify-center">
+                <i class="fas fa-check text-fintech-green"></i>
+            </div>
+            <div>
+                <div class="font-semibold text-sm" id="toastTitle">تم بنجاح</div>
+                <div class="text-xs text-gray-400" id="toastMessage">تم تحديث البيانات</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Market Ticker Data
+        const marketData = [
+            { symbol: 'TASI', name: 'تاسي', price: '11,240', change: '+1.2%', up: true },
+            { symbol: 'S&P500', name: 'S&P 500', price: '4,320', change: '+0.8%', up: true },
+            { symbol: 'NASDAQ', name: 'ناسداك', price: '13,450', change: '-0.3%', up: false },
+            { symbol: 'BTC', name: 'بيتكوين', price: '67,230', change: '+2.1%', up: true },
+            { symbol: 'ETH', name: 'إيثيريوم', price: '3,450', change: '+1.5%', up: true },
+            { symbol: 'GOLD', name: 'ذهب', price: '2,340', change: '-0.2%', up: false },
+            { symbol: 'OIL', name: 'نفط', price: '78.50', change: '+1.8%', up: true },
+            { symbol: 'EUR', name: 'يورو/دولار', price: '1.08', change: '+0.1%', up: true },
+        ];
+
+        function initMarketTicker() {
+            const ticker = document.getElementById('marketTicker');
+            const ticker2 = document.getElementById('marketTicker2');
+            const html = marketData.map(item => `
+                <div class="flex items-center gap-2 px-4">
+                    <span class="font-bold text-sm">${item.name}</span>
+                    <span class="text-sm">${item.price}</span>
+                    <span class="text-sm ${item.up ? 'text-fintech-green' : 'text-red-400'}">
+                        <i class="fas fa-${item.up ? 'arrow-up' : 'arrow-down'}"></i> ${item.change}
+                    </span>
+                </div>
+            `).join('');
+            ticker.innerHTML = html;
+            ticker2.innerHTML = html;
+        }
+
+        // Counter Animation
+        function animateCounters() {
+            const counters = document.querySelectorAll('.number-counter');
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target'));
+                const duration = 2000;
+                const increment = target / (duration / 16);
+                let current = 0;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        counter.textContent = target.toLocaleString();
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = Math.floor(current).toLocaleString();
+                    }
+                }, 16);
+            });
+        }
+
+        // Scroll Animation
+        function initScrollAnimation() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.slide-in').forEach(el => observer.observe(el));
+        }
+
+        // Portfolio Chart
+        let portfolioChart;
+        function initPortfolioChart() {
+            const ctx = document.getElementById('portfolioChart').getContext('2d');
+            portfolioChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
+                    datasets: [{
+                        label: 'أداء المحفظة',
+                        data: [42000, 43500, 41000, 44500, 43800, 45230],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#10b981',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#94a3b8' }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#94a3b8' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Allocation Chart
+        let allocationChart;
+        function initAllocationChart() {
+            const ctx = document.getElementById('allocationChart').getContext('2d');
+            allocationChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['أسهم', 'سندات', 'عقارات', 'نقد', 'عملات رقمية'],
+                    datasets: [{
+                        data: [40, 25, 15, 12, 8],
+                        backgroundColor: [
+                            '#10b981',
+                            '#14b8a6',
+                            '#f59e0b',
+                            '#3b82f6',
+                            '#8b5cf6'
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#94a3b8',
+                                padding: 15,
+                                font: { size: 12 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update Dashboard
+        function updateDashboard() {
+            const assets = document.getElementById('totalAssets');
+            const returns = document.getElementById('monthlyReturn');
+            const risk = document.getElementById('riskIndex');
+            const savings = document.getElementById('savingsTarget');
+
+            // Animate numbers
+            assets.style.opacity = '0';
+            setTimeout(() => {
+                assets.textContent = '$' + (44000 + Math.floor(Math.random() * 3000)).toLocaleString();
+                assets.style.opacity = '1';
+            }, 300);
+
+            returns.textContent = '+$' + (1000 + Math.floor(Math.random() * 500)).toLocaleString();
+
+            // Update charts
+            if (portfolioChart) {
+                const newData = portfolioChart.data.datasets[0].data.map(v => v + (Math.random() - 0.5) * 2000);
+                portfolioChart.data.datasets[0].data = newData;
+                portfolioChart.update();
+            }
+
+            showToast('تم التحديث', 'تم تحديث بيانات المحفظة بنجاح');
+        }
+
+        // Risk Analysis
+        let currentRisk = 'moderate';
+        function setRisk(risk) {
+            currentRisk = risk;
+            document.querySelectorAll('.risk-btn').forEach(btn => {
+                if (btn.dataset.risk === risk) {
+                    btn.classList.add('border-fintech-green', 'bg-fintech-green/20');
+                    btn.classList.remove('border-white/20');
+                } else {
+                    btn.classList.remove('border-fintech-green', 'bg-fintech-green/20');
+                    btn.classList.add('border-white/20');
+                }
+            });
+        }
+
+        // Analysis Form
+        document.getElementById('analysisForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const income = parseInt(document.getElementById('income').value);
+            const expenses = parseInt(document.getElementById('expenses').value);
+            const savings = parseInt(document.getElementById('savings').value);
+            const debts = parseInt(document.getElementById('debts').value);
+            const goal = document.getElementById('goal').value;
+
+            const netIncome = income - expenses;
+            const savingsRate = (netIncome / income * 100).toFixed(1);
+            const debtToIncome = (debts / income * 100).toFixed(1);
+            const emergencyMonths = (savings / expenses).toFixed(1);
+
+            const t3 = translations[currentLang];
+            let riskLevel, riskColor, recommendation;
+            if (currentRisk === 'conservative') {
+                riskLevel = t3.conservative;
+                riskColor = 'text-fintech-green';
+                recommendation = currentLang === 'ar' ? 'أنصحك بالتركيز على السندات الحكومية وصناديق الاستثمار المتنوعة مع القليل من الأسهم الدفاعية.' : 'Focus on government bonds and diversified funds with some defensive stocks.';
+            } else if (currentRisk === 'moderate') {
+                riskLevel = t3.moderate;
+                riskColor = 'text-fintech-gold';
+                recommendation = currentLang === 'ar' ? 'توزيع متوازن بين الأسهم والسندات مع 15% في العقارات REITs.' : 'Balanced allocation between stocks and bonds with 15% in REITs.';
+            } else {
+                riskLevel = t3.aggressive;
+                riskColor = 'text-red-400';
+                recommendation = currentLang === 'ar' ? 'زيادة التعرض للأسهم الناشئة والعملات الرقمية مع مراقبة يومية.' : 'Increase exposure to emerging stocks and crypto with daily monitoring.';
+            }
+
+            const resultsHTML = `
+                <div class="space-y-4">
+                    <div class="p-4 rounded-xl bg-gradient-to-r from-fintech-green/20 to-fintech-teal/20 border border-fintech-green/30">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-robot text-fintech-green"></i>
+                            <span class="font-semibold">تحليل الذكاء الاصطناعي</span>
+                        </div>
+                        <p class="text-sm text-gray-300">${recommendation}</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <div class="text-sm text-gray-400 mb-1">معدل الادخار</div>
+                            <div class="text-2xl font-bold ${savingsRate > 20 ? 'text-fintech-green' : 'text-fintech-gold'}">${savingsRate}%</div>
+                            <div class="text-xs text-gray-400">${savingsRate > 20 ? 'ممتاز' : 'يحتاج تحسين'}</div>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <div class="text-sm text-gray-400 mb-1">نسبة الديون</div>
+                            <div class="text-2xl font-bold ${debtToIncome < 30 ? 'text-fintech-green' : 'text-red-400'}">${debtToIncome}%</div>
+                            <div class="text-xs text-gray-400">${debtToIncome < 30 ? 'صحية' : 'مرتفعة'}</div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-xl p-4">
+                        <div class="text-sm text-gray-400 mb-2">أشهر الطوارئ المتاحة</div>
+                        <div class="flex items-center gap-3">
+                            <div class="flex-1 h-3 rounded-full bg-white/10">
+                                <div class="h-full rounded-full bg-gradient-to-r from-fintech-green to-fintech-teal progress-bar" style="width: ${Math.min(emergencyMonths * 10, 100)}%"></div>
+                            </div>
+                            <span class="font-bold text-fintech-green">${emergencyMonths} شهر</span>
+                        </div>
+                        <div class="text-xs text-gray-400 mt-1">الموصى به: 6 أشهر على الأقل</div>
+                    </div>
+
+                    <div class="glass-card rounded-xl p-4">
+                        <div class="text-sm font-semibold mb-3">خطة الاستثمار المقترحة</div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-400">صناديق الأسهم</span>
+                                <span class="text-sm font-bold">${currentRisk === 'aggressive' ? '60%' : currentRisk === 'moderate' ? '45%' : '30%'}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-400">السندات</span>
+                                <span class="text-sm font-bold">${currentRisk === 'aggressive' ? '20%' : currentRisk === 'moderate' ? '35%' : '50%'}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-400">العقارات</span>
+                                <span class="text-sm font-bold">15%</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-400">نقد/طوارئ</span>
+                                <span class="text-sm font-bold">${currentRisk === 'aggressive' ? '5%' : currentRisk === 'moderate' ? '5%' : '5%'}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-fintech-gold/10 border border-fintech-gold/30">
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-star text-fintech-gold mt-1"></i>
+                            <div>
+                                <div class="font-semibold text-sm mb-1">الهدف المالي: ${getGoalName(goal)}</div>
+                                <p class="text-xs text-gray-400">بناءً على دخلك الحالي، تحتاج إلى ادخار $${(netIncome * 0.2).toFixed(0)} شهرياً لتحقيق هذا الهدف في 5 سنوات.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('analysisResults').innerHTML = resultsHTML;
+
+            // Update risk meter based on analysis data
+            updateRiskMeterFromAnalysis(savingsRate, debtToIncome, emergencyMonths, currentRisk);
+
+            showToast(translations[currentLang].success, translations[currentLang].analysisDone);
+        });
+
+        function updateRiskMeterFromAnalysis(savingsRate, debtToIncome, emergencyMonths, riskProfile) {
+            // Calculate dynamic risk score (0-100)
+            let riskScore = 50; // base
+
+            // Debt impact (high debt = higher risk)
+            if (debtToIncome > 50) riskScore += 25;
+            else if (debtToIncome > 30) riskScore += 15;
+            else if (debtToIncome > 10) riskScore += 5;
+            else riskScore -= 10;
+
+            // Savings rate impact (low savings = higher risk)
+            if (savingsRate < 10) riskScore += 20;
+            else if (savingsRate < 20) riskScore += 10;
+            else if (savingsRate > 30) riskScore -= 15;
+
+            // Emergency months impact
+            if (emergencyMonths < 3) riskScore += 15;
+            else if (emergencyMonths < 6) riskScore += 5;
+            else if (emergencyMonths > 12) riskScore -= 10;
+
+            // Risk profile impact
+            if (riskProfile === 'aggressive') riskScore += 10;
+            else if (riskProfile === 'conservative') riskScore -= 10;
+
+            // Clamp between 0-100
+            riskScore = Math.max(0, Math.min(100, Math.round(riskScore)));
+
+            // Update the risk meter needle
+            const needle = document.getElementById('riskNeedle');
+            const scoreDisplay = document.getElementById('riskScore');
+            const riskLabel = document.querySelector('.risk-meter + div span');
+
+            if (needle && scoreDisplay) {
+                const targetRotation = -90 + (riskScore / 100 * 180);
+                needle.style.transform = 'translateX(-50%) rotate(' + targetRotation + 'deg)';
+                scoreDisplay.textContent = riskScore;
+
+                // Update label and color
+                let labelText, labelColor, meterColor;
+                const t2 = translations[currentLang];
+                if (riskScore <= 25) {
+                    labelText = t2.veryLowRisk;
+                    labelColor = 'text-fintech-green';
+                    meterColor = 'bg-fintech-green/20';
+                } else if (riskScore <= 45) {
+                    labelText = t2.lowRisk;
+                    labelColor = 'text-fintech-green';
+                    meterColor = 'bg-fintech-green/20';
+                } else if (riskScore <= 65) {
+                    labelText = t2.mediumRisk;
+                    labelColor = 'text-fintech-gold';
+                    meterColor = 'bg-fintech-gold/20';
+                } else if (riskScore <= 80) {
+                    labelText = t2.highRisk;
+                    labelColor = 'text-orange-400';
+                    meterColor = 'bg-orange-500/20';
+                } else {
+                    labelText = t2.veryHighRisk;
+                    labelColor = 'text-red-400';
+                    meterColor = 'bg-red-500/20';
+                }
+
+                if (riskLabel) {
+                    riskLabel.textContent = labelText;
+                    riskLabel.className = 'px-3 py-1 rounded-full ' + meterColor + ' ' + labelColor + ' text-sm font-semibold';
+                }
+
+                // Also update the risk index card in dashboard
+                const riskIndexCard = document.getElementById('riskIndex');
+                if (riskIndexCard) {
+                    riskIndexCard.textContent = riskScore + '/100';
+                    if (riskScore <= 45) {
+                        riskIndexCard.className = 'text-2xl font-bold text-fintech-green';
+                    } else if (riskScore <= 65) {
+                        riskIndexCard.className = 'text-2xl font-bold text-fintech-gold';
+                    } else {
+                        riskIndexCard.className = 'text-2xl font-bold text-red-400';
+                    }
+                }
+            }
+        }
+
+        function getGoalName(goal) {
+            const goalsAr = {
+                'retirement': 'التقاعد المبكر',
+                'house': 'شراء منزل',
+                'education': 'تعليم الأطفال',
+                'travel': 'سفر واستكشاف',
+                'business': 'بدء مشروع'
+            };
+            const goalsEn = {
+                'retirement': 'Early Retirement',
+                'house': 'Buy a House',
+                'education': 'Children Education',
+                'travel': 'Travel & Explore',
+                'business': 'Start a Business'
+            };
+            return currentLang === 'ar' ? (goalsAr[goal] || goal) : (goalsEn[goal] || goal);
+        }
+
+        // Savings Calculator
+        const incomeSlider = document.getElementById('incomeSlider');
+        const incomeValue = document.getElementById('incomeValue');
+        const savingsBar = document.getElementById('savingsBar');
+        const savingsPercent = document.getElementById('savingsPercent');
+        const monthlySavings = document.getElementById('monthlySavings');
+        const year1 = document.getElementById('year1');
+        const year5 = document.getElementById('year5');
+
+        function updateSavingsCalc() {
+            const income = parseInt(incomeSlider.value);
+            incomeValue.textContent = '$' + income.toLocaleString();
+
+            let rate = 20;
+            if (income < 3000) rate = 10;
+            else if (income < 5000) rate = 15;
+            else if (income < 10000) rate = 20;
+            else if (income < 15000) rate = 25;
+            else rate = 30;
+
+            savingsBar.style.width = rate + '%';
+            savingsPercent.textContent = rate + '%';
+
+            const monthly = income * (rate / 100);
+            monthlySavings.textContent = '$' + monthly.toLocaleString();
+
+            const y1 = monthly * 12 * 1.05;
+            const y5 = monthly * 12 * ((Math.pow(1.05, 5) - 1) / 0.05);
+
+            year1.textContent = '$' + Math.floor(y1).toLocaleString();
+            year5.textContent = '$' + Math.floor(y5).toLocaleString();
+        }
+
+        incomeSlider.addEventListener('input', updateSavingsCalc);
+
+        // Chat Assistant
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage(message, 'user');
+            chatInput.value = '';
+
+            // Simulate AI response
+            setTimeout(() => {
+                const response = generateAIResponse(message);
+                addMessage(response, 'ai');
+            }, 1000);
+        }
+
+        function quickQuestion(question) {
+            chatInput.value = question;
+            sendMessage();
+        }
+
+        function addMessage(text, sender) {
+            const div = document.createElement('div');
+            div.className = 'flex items-start gap-3';
+
+            if (sender === 'user') {
+                div.innerHTML = `
+                    <div class="glass-card rounded-2xl rounded-tl-none p-3 max-w-[80%] ml-auto bg-fintech-green/20">
+                        <p class="text-sm">${text}</p>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-fintech-blue flex items-center justify-center flex-shrink-0 mt-1">
+                        <i class="fas fa-user text-white text-xs"></i>
+                    </div>
+                `;
+            } else {
+                div.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-fintech-green to-fintech-teal flex items-center justify-center flex-shrink-0 mt-1">
+                        <i class="fas fa-robot text-white text-xs"></i>
+                    </div>
+                    <div class="glass-card rounded-2xl rounded-tr-none p-3 max-w-[80%]">
+                        <p class="text-sm">${text}</p>
+                    </div>
+                `;
+            }
+
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function generateAIResponse(message) {
+            const lowerMsg = message.toLowerCase();
+            const isAr = currentLang === 'ar';
+
+            if (lowerMsg.includes('استثمار') || lowerMsg.includes('أبدأ') || lowerMsg.includes('invest') || lowerMsg.includes('start')) {
+                return isAr ? 'لبدء الاستثمار، أنصحك باتباع هذه الخطوات: 1) بناء صندوق طوارئ يغطي 6 أشهر، 2) فتح حساب في منصة استثمار موثوقة، 3) البدء بصناديق الاستثمار المتنوعة (ETFs) كخطوة أولى، 4) تنويع المحفظة تدريجياً. هل تريد تفاصيل أكثر عن أي خطوة؟' : 'To start investing, follow these steps: 1) Build an emergency fund covering 6 months, 2) Open an account on a trusted investment platform, 3) Start with diversified ETFs as a first step, 4) Gradually diversify your portfolio. Want more details on any step?';
+            }
+            else if (lowerMsg.includes('ادخار') || lowerMsg.includes('خطة') || lowerMsg.includes('savings') || lowerMsg.includes('plan')) {
+                return isAr ? 'أفضل خطة ادخار تعتمد على وضعك: للدخل < $3000: ادخر 10%، للدخل $3000-5000: 15-20%، للدخل > $5000: 25-30%. ابدأ بصندوق الطوارئ أولاً (6 أشهر نفقات)، ثم ادخر للأهداف المتوسطة (1-5 سنوات)، وأخيراً للتقاعد الطويل.' : 'Best savings plan depends on your situation: Income < $3000: save 10%, Income $3000-5000: 15-20%, Income > $5000: 25-30%. Start with emergency fund first (6 months expenses), then save for medium goals (1-5 years), finally for long-term retirement.';
+            }
+            else if (lowerMsg.includes('مخاطر') || lowerMsg.includes('خطر') || lowerMsg.includes('risk')) {
+                return isAr ? 'بناءً على تحليلي، مخاطرك الحالية منخفضة (23/100). نسبة ديونك صحية وتمتلك مخزن طوارئ جيد. لكن أنصحك بزيادة تنويع الأصول. هل تريد تقرير مخاطر مفصل؟' : 'Based on my analysis, your current risk is low (23/100). Your debt ratio is healthy and you have a good emergency fund. However, I recommend increasing asset diversification. Want a detailed risk report?';
+            }
+            else if (lowerMsg.includes('مرحبا') || lowerMsg.includes('هلا') || lowerMsg.includes('hello') || lowerMsg.includes('hi')) {
+                return isAr ? 'مرحباً! أنا هنا لمساعدتك في إدارة ماليتك. يمكنني تحليل استثماراتك، اقتراح خطط ادخار، حساب العوائد المتوقعة، أو الإجابة على أي سؤال مالي. ما الذي يهمك اليوم؟' : 'Hello! I am here to help you manage your finances. I can analyze your investments, suggest savings plans, calculate expected returns, or answer any financial question. What matters to you today?';
+            }
+            else {
+                return isAr ? 'فهمت سؤالك. بناءً على بياناتك المالية الحالية، أنصحك بالتركيز على زيادة معدل الادخار إلى 20% على الأقل. كما يمكنني إعداد تقرير مفصل عن وضعك المالي إذا أردت. هل تريد ذلك؟' : 'I understand your question. Based on your current financial data, I recommend focusing on increasing your savings rate to at least 20%. I can also prepare a detailed report on your financial situation if you want. Would you like that?';
+            }
+        }
+
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Toast Notification
+        function showToast(title, message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Navigation
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function openDashboard() {
+            if (!currentUser && !localStorage.getItem('fintechgen_current_user')) {
+                showToast(translations[currentLang].error, translations[currentLang].emailNotRegistered);
+                document.getElementById('authOverlay').style.display = 'flex';
+                document.getElementById('authOverlay').style.opacity = '1';
+                document.getElementById('authOverlay').style.transform = 'scale(1)';
+                return;
+            }
+            scrollToSection('dashboard');
+            showToast('مرحباً', 'تم فتح لوحة التحكم التفاعلية');
+        }
+
+        function toggleLanguage() {
+            showToast(translations[currentLang].comingSoon, translations[currentLang].englishSoon);
+        }
+
+        // Risk Needle Animation
+        function animateRiskNeedle() {
+            const needle = document.getElementById('riskNeedle');
+            const score = document.getElementById('riskScore');
+            let currentRotation = -90;
+            const targetRotation = -90 + (23 / 100 * 180);
+
+            const interval = setInterval(() => {
+                if (currentRotation >= targetRotation) {
+                    clearInterval(interval);
+                } else {
+                    currentRotation += 2;
+                    needle.style.transform = `translateX(-50%) rotate(${currentRotation}deg)`;
+                }
+            }, 20);
+        }
+
+        
+        // ==================== AUTH SYSTEM ====================
+        let currentUser = null;
+        const users = JSON.parse(localStorage.getItem('fintechgen_users') || '[]');
+
+        function switchAuthTab(tab) {
+            const loginTab = document.getElementById('loginTab');
+            const registerTab = document.getElementById('registerTab');
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const forgotForm = document.getElementById('forgotPasswordForm');
+
+            if (tab === 'login') {
+                loginTab.classList.add('tab-active');
+                loginTab.classList.remove('text-gray-400');
+                registerTab.classList.remove('tab-active');
+                registerTab.classList.add('text-gray-400');
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                forgotForm.classList.add('hidden');
+            } else if (tab === 'register') {
+                registerTab.classList.add('tab-active');
+                registerTab.classList.remove('text-gray-400');
+                loginTab.classList.remove('tab-active');
+                loginTab.classList.add('text-gray-400');
+                registerForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+                forgotForm.classList.add('hidden');
+            }
+        }
+
+        function showForgotPassword() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('forgotPasswordForm').classList.remove('hidden');
+            document.getElementById('loginTab').classList.remove('tab-active');
+            document.getElementById('loginTab').classList.add('text-gray-400');
+            document.getElementById('registerTab').classList.remove('tab-active');
+            document.getElementById('registerTab').classList.add('text-gray-400');
+        }
+
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Password strength checker
+        document.getElementById('registerPassword')?.addEventListener('input', function() {
+            const password = this.value;
+            const strengthBar = document.getElementById('passwordStrengthBar');
+            const strengthText = document.getElementById('passwordStrength');
+
+            let strength = 0;
+            if (password.length >= 8) strength += 25;
+            if (password.match(/[a-z]/)) strength += 15;
+            if (password.match(/[A-Z]/)) strength += 15;
+            if (password.match(/[0-9]/)) strength += 20;
+            if (password.match(/[^a-zA-Z0-9]/)) strength += 25;
+
+            strengthBar.style.width = strength + '%';
+
+            if (strength < 40) {
+                strengthBar.className = 'h-full rounded-full bg-red-500 transition-all duration-300';
+                strengthText.textContent = 'ضعيفة';
+                strengthText.className = 'text-xs font-bold text-red-400';
+            } else if (strength < 70) {
+                strengthBar.className = 'h-full rounded-full bg-fintech-gold transition-all duration-300';
+                strengthText.textContent = 'متوسطة';
+                strengthText.className = 'text-xs font-bold text-fintech-gold';
+            } else {
+                strengthBar.className = 'h-full rounded-full bg-fintech-green transition-all duration-300';
+                strengthText.textContent = 'قوية';
+                strengthText.className = 'text-xs font-bold text-fintech-green';
+            }
+        });
+
+        // Login Form
+        document.getElementById('loginForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const user = users.find(u => u.email === email && u.password === password);
+
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('fintechgen_current_user', JSON.stringify(user));
+                showToast(translations[currentLang].loggedIn, translations[currentLang].welcomeBack + ' ' + user.name);
+                enterPlatform();
+            } else {
+                // Check if email exists
+                const existingUser = users.find(u => u.email === email);
+                if (existingUser) {
+                    showToast(translations[currentLang].error, translations[currentLang].wrongPassword);
+                } else {
+                    showToast(translations[currentLang].error, translations[currentLang].emailNotRegistered);
+                }
+            }
+        });
+
+        // Register Form
+        document.getElementById('registerForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+
+            if (password !== confirmPassword) {
+                showToast(translations[currentLang].error, translations[currentLang].passwordsNotMatch);
+                return;
+            }
+
+            if (password.length < 8) {
+                showToast(translations[currentLang].error, translations[currentLang].passwordTooShort);
+                return;
+            }
+
+            if (users.find(u => u.email === email)) {
+                showToast(translations[currentLang].error, translations[currentLang].emailExists);
+                return;
+            }
+
+            const newUser = {
+                id: Date.now(),
+                name: name,
+                email: email,
+                password: password,
+                createdAt: new Date().toISOString(),
+                avatar: name.charAt(0).toUpperCase()
+            };
+
+            users.push(newUser);
+            localStorage.setItem('fintechgen_users', JSON.stringify(users));
+            currentUser = newUser;
+            localStorage.setItem('fintechgen_current_user', JSON.stringify(newUser));
+
+            showToast(translations[currentLang].success, translations[currentLang].welcomeBack + ' ' + name + '!');
+            enterPlatform();
+        });
+
+        // Forgot Password Form
+        document.getElementById('forgotPasswordForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('forgotEmail').value;
+            const user = users.find(u => u.email === email);
+
+            if (user) {
+                showToast(translations[currentLang].success, translations[currentLang].resetSent);
+                setTimeout(() => switchAuthTab('login'), 2000);
+            } else {
+                showToast(translations[currentLang].error, translations[currentLang].emailNotFound);
+            }
+        });
+
+        function socialLogin(provider) {
+            showToast('قريباً', 'تسجيل الدخول عبر ' + provider + ' سيتم إضافته قريباً');
+        }
+
+        function enterPlatform() {
+            const overlay = document.getElementById('authOverlay');
+            overlay.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+            overlay.style.opacity = '0';
+            overlay.style.transform = 'scale(1.1)';
+
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                document.body.style.overflow = 'auto';
+
+                // Update nav buttons to show logout
+                updateNavButtons(true);
+
+                // Update user info in dashboard after DOM is fully ready
+                setTimeout(updateUserInfo, 100);
+            }, 800);
+        }
+
+        function updateUserInfo() {
+            const user = JSON.parse(localStorage.getItem('fintechgen_current_user'));
+            if (user) {
+                // Update dashboard sidebar user name
+                const sidebarUserName = document.getElementById('sidebarUserName');
+                if (sidebarUserName) {
+                    sidebarUserName.textContent = user.name;
+                }
+                // Update avatar with first letter of user's name
+                const sidebarAvatar = document.getElementById('sidebarAvatar');
+                if (sidebarAvatar) {
+                    sidebarAvatar.textContent = user.name.charAt(0).toUpperCase();
+                }
+            }
+        }
+
+        function checkAuth() {
+            const savedUser = localStorage.getItem('fintechgen_current_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                updateNavButtons(true);
+                enterPlatform();
+            } else {
+                updateNavButtons(false);
+            }
+        }
+
+        function updateNavButtons(isLoggedIn) {
+            const loginBtn = document.getElementById('navLoginBtn');
+            const logoutBtn = document.getElementById('navLogoutBtn');
+            if (loginBtn && logoutBtn) {
+                if (isLoggedIn) {
+                    loginBtn.classList.add('hidden');
+                    logoutBtn.classList.remove('hidden');
+                } else {
+                    loginBtn.classList.remove('hidden');
+                    logoutBtn.classList.add('hidden');
+                }
+            }
+        }
+
+        // Logout function (can be called from anywhere)
+        function logout() {
+            localStorage.removeItem('fintechgen_current_user');
+            currentUser = null;
+            updateNavButtons(false);
+            showToast(translations[currentLang].loggedOut, translations[currentLang].logoutSuccess);
+            setTimeout(() => location.reload(), 1500);
+        }
+
+        // ==================== END AUTH SYSTEM ====================
+// Initialize
+        
+        // ==================== LANGUAGE SYSTEM ====================
+        let currentLang = localStorage.getItem('fintechgen_lang') || 'ar';
+
+        const translations = {
+            ar: {
+                // Navigation
+                features: 'المميزات',
+                dashboard: 'لوحة التحكم',
+                aiAnalysis: 'التحليل الذكي',
+                savings: 'خطط الادخار',
+                enterPlatform: 'دخول المنصة',
+                logout: 'تسجيل الخروج',
+
+                // Hero
+                heroBadge: 'الجيل القادم من الذكاء المالي',
+                heroTitle1: 'ذكاء اصطناعي يفهم',
+                heroTitle2: 'ماليتك',
+                heroTitle3: 'ويحللها',
+                heroDesc: 'منصة ذكاء اصطناعي متطورة تولد تقارير مالية واستشارية مخصصة وفورية بناءً على تحليل سلوكك المالي وبيانات السوق اللحظية',
+                startNow: 'ابدأ الآن',
+                watchDemo: 'شاهد العرض',
+                activeUsers: 'مستخدم نشط',
+                predictionAccuracy: '% دقة التنبؤ',
+                savedAmount: 'مليون دولار تم توفيره',
+
+                // Features
+                featuresTitle: 'المميزات الرئيسية',
+                featuresSubtitle: 'كل ما تحتاجه لإدارة ماليتك بذكاء',
+                featuresDesc: 'تقنيات متطورة تعمل معاً لتقديم تجربة مالية شاملة وآمنة',
+                feat1Title: 'تحليل سلوكي ذكي',
+                feat1Desc: 'يحلل الذكاء الاصطناعي أنماط إنفاقك وادخارك تلقائياً ليقدم لك رؤى دقيقة عن عاداتك المالية',
+                feat2Title: 'بيانات لحظية',
+                feat2Desc: 'ربط مباشر مع الأسواق المالية العالمية لتقديم تحديثات فورية عن الأسعار والتقلبات',
+                feat3Title: 'تقارير مولدة تلقائياً',
+                feat3Desc: 'تقارير مالية شاملة ومخصصة تُولد بالذكاء الاصطناعي بضغطة زر واحدة',
+                feat4Title: 'تنبؤ بالمخاطر',
+                feat4Desc: 'نماذج تنبؤية متقدمة تحذرك من المخاطر المستقبلية قبل حدوثها',
+                feat5Title: 'خطط ادخار مرنة',
+                feat5Desc: 'خطط ادخار تتكيف تلقائياً مع دخلك ونفقاتك لتحقيق أهدافك المالية',
+                feat6Title: 'أمان بنكي',
+                feat6Desc: 'تشفير من الطراز الأول وتقنيات حماية متعددة الطبقات لبياناتك المالية',
+
+                // Dashboard
+                dashboardTitle: 'لوحة التحكم',
+                dashboardSubtitle: 'جرب لوحة التحكم التفاعلية',
+                overview: 'نظرة عامة',
+                myWallet: 'محفظتي',
+                aiInsights: 'التحليل الذكي',
+                goals: 'الأهداف',
+                reports: 'التقارير',
+                settings: 'الإعدادات',
+                portfolioOverview: 'نظرة عامة على المحفظة',
+                lastUpdate: 'آخر تحديث:',
+                now: 'الآن',
+                refresh: 'تحديث',
+                export: 'تصدير',
+                totalAssets: 'إجمالي الأصول',
+                monthlyReturn: 'العائد الشهري',
+                thisMonth: 'هذا الشهر',
+                riskIndex: 'مؤشر المخاطر',
+                low: 'منخفض',
+                savingsTarget: 'الادخار المستهدف',
+                annualGoal: 'من الهدف السنوي',
+                portfolioPerformance: 'أداء المحفظة',
+                months6: '6 أشهر',
+                year: 'سنة',
+                all: 'الكل',
+                assetAllocation: 'توزيع الأصول',
+                rebalance: 'إعادة التوازن',
+                aiInsightsTitle: 'رؤى الذكاء الاصطناعي',
+                new: 'جديد',
+                investmentOpportunity: 'فرصة استثمارية',
+                opportunityDesc: 'القطاع التكنولوجي يشهد نمواً بنسبة 15%، يُنصح بزيادة الوزن النسبي في المحفظة.',
+                riskAlert: 'تنبيه مخاطر',
+                riskAlertDesc: 'ارتفاع التقلب في سوق العملات الرقمية، يُفضل تقليل التعرض مؤقتاً.',
+
+                // AI Analysis
+                aiAnalysisTitle: 'التحليل الذكي',
+                aiAnalysisSubtitle: 'جرب محاكاة التحليل المالي الذكي',
+                aiAnalysisDesc: 'أدخل بياناتك المالية لتحصل على تحليل فوري وتوصيات مخصصة',
+                yourData: 'بياناتك المالية',
+                monthlyIncome: 'الدخل الشهري ($)',
+                monthlyExpenses: 'النفقات الشهرية ($)',
+                currentSavings: 'المدخرات الحالية ($)',
+                debts: 'الديون ($)',
+                riskLevel: 'مستوى المخاطرة المفضل',
+                conservative: 'محافظ',
+                moderate: 'معتدل',
+                aggressive: 'جريء',
+                financialGoal: 'الهدف المالي',
+                retirement: 'التقاعد المبكر',
+                house: 'شراء منزل',
+                education: 'تعليم الأطفال',
+                travel: 'سفر واستكشاف',
+                business: 'بدء مشروع',
+                analyzeBtn: 'حلل بياناتي',
+                analysisResults: 'نتائج التحليل',
+                enterDataPrompt: 'أدخل بياناتك واضغط "حلل بياناتي" للحصول على التحليل',
+
+                // Risk Prediction
+                riskPredictionTitle: 'التنبؤ بالمخاطر',
+                riskPredictionSubtitle: 'مؤشر المخاطر المستقبلية',
+                riskPredictionDesc: 'نموذج تنبؤي يحلل احتمالية المخاطر المالية المستقبلية بناءً على بياناتك',
+                currentRiskIndex: 'مؤشر المخاطر الحالي',
+                outOf100: 'من 100',
+                dailyUpdate: 'يتم تحديث المؤشر يومياً بناءً على تقلبات السوق',
+                riskFactors: 'عوامل المخاطر الرئيسية',
+                marketVolatility: 'تقلب السوق',
+                debtRatio: 'نسبة الديون',
+                assetDiversity: 'تنوع الأصول',
+                emergencyFund: 'مخزن الطوارئ',
+                incomeStability: 'استقرار الدخل',
+                futureScenarios: 'سيناريوهات المستقبل',
+                positiveScenario: 'السيناريو الإيجابي',
+                positiveProb: '65% احتمالية',
+                positiveDesc: 'نمو المحفظة بنسبة 12% سنوياً مع الالتزام بالخطة المقترحة',
+                neutralScenario: 'السيناريو المحايد',
+                neutralProb: '25% احتمالية',
+                neutralDesc: 'استقرار نسبي مع عائد 5% سنوياً',
+                negativeScenario: 'السيناريو السلبي',
+                negativeProb: '10% احتمالية',
+                negativeDesc: 'تراجع محتمل بنسبة 8% في حالة ركود اقتصادي',
+
+                // Savings
+                savingsTitle: 'خطط الادخار',
+                savingsSubtitle: 'خطط ادخار مرنة ومخصصة',
+                savingsDesc: 'خطط تتكيف تلقائياً مع دخلك ونفقاتك لتحقيق أهدافك المالية',
+                emergencyPlan: 'خطة الطوارئ',
+                emergencyDesc: 'ادخار 6 أشهر من النفقات الأساسية للحماية من المفاجآت',
+                progress: 'التقدم',
+                target: 'المستهدف:',
+                houseFund: 'صندوق المنزل',
+                houseDesc: 'ادخار مقدم شراء منزل بنسبة 20% من القيمة',
+                earlyRetirement: 'التقاعد المبكر',
+                retirementDesc: 'خطة استثمار طويلة المدى للاستقلال المالي المبكر',
+                planDetails: 'تفاصيل الخطة',
+
+                // Calculator
+                smartCalculator: 'حاسبة الادخار الذكية',
+                calculatorDesc: 'أدخل دخلك الشهري لنقترح لك خطة ادخار مثالية تتكيف مع وضعك المالي',
+                suggestedRate: 'نسبة الادخار المقترحة',
+                suggestedAmount: 'المبلغ المقترح للادخار شهرياً',
+                after1Year: 'بعد سنة',
+                after5Years: 'بعد 5 سنوات',
+                includesReturn: '*الحسابات تشمل عائد سنوي متوقع 5%',
+
+                // Chat
+                smartAssistant: 'المساعد الذكي',
+                chatTitle: 'تحدث مع مستشارك المالي الذكي',
+                aiAssistantName: 'FinTechGen AI Assistant',
+                online: 'متصل الآن',
+                chatPlaceholder: 'اكتب سؤالك هنا...',
+                howToInvest: 'كيف أبدأ الاستثمار؟',
+                bestSavings: 'ما أفضل خطة ادخار؟',
+                analyzeRisk: 'حلل مخاطري',
+
+                // Footer
+                product: 'المنتج',
+                company: 'الشركة',
+                support: 'الدعم',
+                aboutUs: 'من نحن',
+                blog: 'المدونة',
+                careers: 'الوظائف',
+                contact: 'اتصل بنا',
+                helpCenter: 'مركز المساعدة',
+                security: 'الأمان',
+                privacy: 'الخصوصية',
+                terms: 'الشروط',
+                rights: 'جميع الحقوق محفوظة.',
+
+                // Auth
+                login: 'تسجيل الدخول',
+                register: 'حساب جديد',
+                email: 'البريد الإلكتروني',
+                password: 'كلمة المرور',
+                rememberMe: 'تذكرني',
+                forgotPassword: 'نسيت كلمة المرور؟',
+                fullName: 'الاسم الكامل',
+                confirmPassword: 'تأكيد كلمة المرور',
+                passwordStrength: 'قوة كلمة المرور:',
+                weak: 'ضعيفة',
+                medium: 'متوسطة',
+                strong: 'قوية',
+                passwordHint: '8 أحرف على الأقل، تحتوي على أرقام ورموز',
+                agreeTerms: 'أوافق على',
+                termsOfUse: 'شروط الاستخدام',
+                privacyPolicy: 'سياسة الخصوصية',
+                createAccount: 'إنشاء حساب',
+                resetPassword: 'استعادة كلمة المرور',
+                resetDesc: 'أدخل بريدك الإلكتروني لإرسال رابط الاستعادة',
+                sendReset: 'إرسال رابط الاستعادة',
+                backToLogin: 'العودة لتسجيل الدخول',
+                or: 'أو',
+                securityBadge: 'تشفير AES-256 | مصادقة ثنائية | حماية بنكية',
+
+                // Toast
+                success: 'تم بنجاح',
+                updated: 'تم تحديث البيانات',
+                loggedIn: 'تم تسجيل الدخول',
+                welcomeBack: 'مرحباً بعودتك',
+                analysisDone: 'تم إنشاء التحليل المالي بنجاح',
+                loggedOut: 'تم تسجيل الخروج',
+                logoutSuccess: 'تم الخروج من حسابك بنجاح',
+                error: 'خطأ',
+                wrongPassword: 'كلمة المرور غير صحيحة',
+                emailNotRegistered: 'هذا البريد غير مسجل، أنشئ حساباً جديداً',
+                passwordsNotMatch: 'كلمتا المرور غير متطابقتين',
+                passwordTooShort: 'كلمة المرور يجب أن تكون 8 أحرف على الأقل',
+                emailExists: 'هذا البريد الإلكتروني مسجل مسبقاً',
+                resetSent: 'تم إرسال رابط استعادة كلمة المرور إلى بريدك',
+                emailNotFound: 'هذا البريد الإلكتروني غير مسجل',
+                comingSoon: 'قريباً',
+                englishSoon: 'سيتم دعم اللغة الإنجليزية قريباً',
+
+                // Risk levels
+                veryLowRisk: 'مخاطر منخفضة جداً',
+                lowRisk: 'مخاطر منخفضة',
+                mediumRisk: 'مخاطر متوسطة',
+                highRisk: 'مخاطر مرتفعة',
+                veryHighRisk: 'مخاطر عالية جداً'
+            },
+
+            en: {
+                // Navigation
+                features: 'Features',
+                dashboard: 'Dashboard',
+                aiAnalysis: 'AI Analysis',
+                savings: 'Savings Plans',
+                enterPlatform: 'Enter Platform',
+                logout: 'Logout',
+
+                // Hero
+                heroBadge: 'Next Gen Financial Intelligence',
+                heroTitle1: 'AI that understands',
+                heroTitle2: 'your finances',
+                heroTitle3: '& analyzes them',
+                heroDesc: 'An advanced AI platform that generates customized financial reports and advisory instantly based on your financial behavior and real-time market data',
+                startNow: 'Start now',
+                watchDemo: 'Watch the show',
+                activeUsers: 'Active Users',
+                predictionAccuracy: '% Prediction Accuracy',
+                savedAmount: 'Million Dollars Saved',
+
+                // Features
+                featuresTitle: 'Key Features',
+                featuresSubtitle: 'Everything you need to manage your finances smartly',
+                featuresDesc: 'Advanced technologies working together to deliver a comprehensive and secure financial experience',
+                feat1Title: 'Smart Behavioral Analysis',
+                feat1Desc: 'AI automatically analyzes your spending and saving patterns to provide accurate insights about your financial habits',
+                feat2Title: 'Real-time Data',
+                feat2Desc: 'Direct connection to global financial markets for instant price and volatility updates',
+                feat3Title: 'Auto-Generated Reports',
+                feat3Desc: 'Comprehensive and customized financial reports generated by AI with one click',
+                feat4Title: 'Risk Prediction',
+                feat4Desc: 'Advanced predictive models that warn you about future risks before they happen',
+                feat5Title: 'Flexible Savings Plans',
+                feat5Desc: 'Savings plans that automatically adapt to your income and expenses to achieve your financial goals',
+                feat6Title: 'Bank-Grade Security',
+                feat6Desc: 'Top-tier encryption and multi-layered protection technologies for your financial data',
+
+                // Dashboard
+                dashboardTitle: 'Dashboard',
+                dashboardSubtitle: 'Try the Interactive Dashboard',
+                overview: 'Overview',
+                myWallet: 'My Wallet',
+                aiInsights: 'AI Insights',
+                goals: 'Goals',
+                reports: 'Reports',
+                settings: 'Settings',
+                portfolioOverview: 'Portfolio Overview',
+                lastUpdate: 'Last updated:',
+                now: 'Now',
+                refresh: 'Refresh',
+                export: 'Export',
+                totalAssets: 'Total Assets',
+                monthlyReturn: 'Monthly Return',
+                thisMonth: 'This month',
+                riskIndex: 'Risk Index',
+                low: 'Low',
+                savingsTarget: 'Savings Target',
+                annualGoal: 'of annual goal',
+                portfolioPerformance: 'Portfolio Performance',
+                months6: '6 Months',
+                year: 'Year',
+                all: 'All',
+                assetAllocation: 'Asset Allocation',
+                rebalance: 'Rebalance',
+                aiInsightsTitle: 'AI Insights',
+                new: 'New',
+                investmentOpportunity: 'Investment Opportunity',
+                opportunityDesc: 'Tech sector is growing by 15%, recommended to increase portfolio weight.',
+                riskAlert: 'Risk Alert',
+                riskAlertDesc: 'Increased volatility in crypto market, prefer reducing exposure temporarily.',
+
+                // AI Analysis
+                aiAnalysisTitle: 'AI Analysis',
+                aiAnalysisSubtitle: 'Try the Smart Financial Analysis Simulation',
+                aiAnalysisDesc: 'Enter your financial data to get instant analysis and customized recommendations',
+                yourData: 'Your Financial Data',
+                monthlyIncome: 'Monthly Income ($)',
+                monthlyExpenses: 'Monthly Expenses ($)',
+                currentSavings: 'Current Savings ($)',
+                debts: 'Debts ($)',
+                riskLevel: 'Preferred Risk Level',
+                conservative: 'Conservative',
+                moderate: 'Moderate',
+                aggressive: 'Aggressive',
+                financialGoal: 'Financial Goal',
+                retirement: 'Early Retirement',
+                house: 'Buy a House',
+                education: 'Children Education',
+                travel: 'Travel & Explore',
+                business: 'Start a Business',
+                analyzeBtn: 'Analyze My Data',
+                analysisResults: 'Analysis Results',
+                enterDataPrompt: 'Enter your data and click "Analyze My Data" to get the analysis',
+
+                // Risk Prediction
+                riskPredictionTitle: 'Risk Prediction',
+                riskPredictionSubtitle: 'Future Risk Index',
+                riskPredictionDesc: 'A predictive model that analyzes the probability of future financial risks based on your data',
+                currentRiskIndex: 'Current Risk Index',
+                outOf100: 'out of 100',
+                dailyUpdate: 'Index updates daily based on market fluctuations',
+                riskFactors: 'Key Risk Factors',
+                marketVolatility: 'Market Volatility',
+                debtRatio: 'Debt Ratio',
+                assetDiversity: 'Asset Diversity',
+                emergencyFund: 'Emergency Fund',
+                incomeStability: 'Income Stability',
+                futureScenarios: 'Future Scenarios',
+                positiveScenario: 'Positive Scenario',
+                positiveProb: '65% Probability',
+                positiveDesc: 'Portfolio growth of 12% annually with adherence to the proposed plan',
+                neutralScenario: 'Neutral Scenario',
+                neutralProb: '25% Probability',
+                neutralDesc: 'Relative stability with 5% annual return',
+                negativeScenario: 'Negative Scenario',
+                negativeProb: '10% Probability',
+                negativeDesc: 'Potential decline of 8% in case of economic recession',
+
+                // Savings
+                savingsTitle: 'Savings Plans',
+                savingsSubtitle: 'Flexible & Customized Savings Plans',
+                savingsDesc: 'Plans that automatically adapt to your income and expenses to achieve your financial goals',
+                emergencyPlan: 'Emergency Plan',
+                emergencyDesc: 'Save 6 months of basic expenses for protection against surprises',
+                progress: 'Progress',
+                target: 'Target:',
+                houseFund: 'House Fund',
+                houseDesc: 'Saving 20% down payment for buying a house',
+                earlyRetirement: 'Early Retirement',
+                retirementDesc: 'Long-term investment plan for early financial independence',
+                planDetails: 'Plan Details',
+
+                // Calculator
+                smartCalculator: 'Smart Savings Calculator',
+                calculatorDesc: 'Enter your monthly income to suggest an ideal savings plan tailored to your financial situation',
+                suggestedRate: 'Suggested Savings Rate',
+                suggestedAmount: 'Suggested Monthly Savings Amount',
+                after1Year: 'After 1 Year',
+                after5Years: 'After 5 Years',
+                includesReturn: '*Calculations include expected 5% annual return',
+
+                // Chat
+                smartAssistant: 'Smart Assistant',
+                chatTitle: 'Chat with Your Smart Financial Advisor',
+                aiAssistantName: 'FinTechGen AI Assistant',
+                online: 'Online Now',
+                chatPlaceholder: 'Type your question here...',
+                howToInvest: 'How do I start investing?',
+                bestSavings: 'What is the best savings plan?',
+                analyzeRisk: 'Analyze my risks',
+
+                // Footer
+                product: 'Product',
+                company: 'Company',
+                support: 'Support',
+                aboutUs: 'About Us',
+                blog: 'Blog',
+                careers: 'Careers',
+                contact: 'Contact Us',
+                helpCenter: 'Help Center',
+                security: 'Security',
+                privacy: 'Privacy',
+                terms: 'Terms',
+                rights: 'All rights reserved.',
+
+                // Auth
+                login: 'Login',
+                register: 'New Account',
+                email: 'Email Address',
+                password: 'Password',
+                rememberMe: 'Remember me',
+                forgotPassword: 'Forgot password?',
+                fullName: 'Full Name',
+                confirmPassword: 'Confirm Password',
+                passwordStrength: 'Password Strength:',
+                weak: 'Weak',
+                medium: 'Medium',
+                strong: 'Strong',
+                passwordHint: 'At least 8 characters, include numbers and symbols',
+                agreeTerms: 'I agree to',
+                termsOfUse: 'Terms of Use',
+                privacyPolicy: 'Privacy Policy',
+                createAccount: 'Create Account',
+                resetPassword: 'Reset Password',
+                resetDesc: 'Enter your email to send a reset link',
+                sendReset: 'Send Reset Link',
+                backToLogin: 'Back to Login',
+                or: 'Or',
+                securityBadge: 'AES-256 Encryption | Two-Factor Auth | Bank-Grade Security',
+
+                // Toast
+                success: 'Success',
+                updated: 'Data updated',
+                loggedIn: 'Logged in',
+                welcomeBack: 'Welcome back',
+                analysisDone: 'Financial analysis created successfully',
+                loggedOut: 'Logged out',
+                logoutSuccess: 'You have been logged out successfully',
+                error: 'Error',
+                wrongPassword: 'Incorrect password',
+                emailNotRegistered: 'This email is not registered, create a new account',
+                passwordsNotMatch: 'Passwords do not match',
+                passwordTooShort: 'Password must be at least 8 characters',
+                emailExists: 'This email is already registered',
+                resetSent: 'Password reset link sent to your email',
+                emailNotFound: 'This email is not registered',
+                comingSoon: 'Coming Soon',
+                englishSoon: 'English support will be added soon',
+
+                // Risk levels
+                veryLowRisk: 'Very Low Risk',
+                lowRisk: 'Low Risk',
+                mediumRisk: 'Medium Risk',
+                highRisk: 'High Risk',
+                veryHighRisk: 'Very High Risk'
+            }
+        };
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('fintechgen_lang', currentLang);
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            const t = translations[currentLang];
+            const html = document.documentElement;
+
+            // Update direction
+            html.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+            html.setAttribute('lang', currentLang);
+
+            // Update toggle button
+            const btn = document.getElementById('langToggleBtn');
+            if (btn) btn.textContent = currentLang === 'ar' ? 'EN' : 'عربي';
+
+            // Update all elements with data-i18n attribute
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        el.placeholder = t[key];
+                    } else {
+                        el.textContent = t[key];
+                    }
+                }
+            });
+
+            // Update form labels
+            document.querySelectorAll('[data-i18n-label]').forEach(el => {
+                const key = el.getAttribute('data-i18n-label');
+                if (t[key]) {
+                    const label = el.querySelector('label');
+                    if (label) label.textContent = t[key];
+                }
+            });
+
+            showToast(t.success, currentLang === 'ar' ? 'تم تغيير اللغة' : 'Language changed');
+        }
+
+        // Apply saved language on load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (currentLang === 'en') {
+                applyLanguage();
+            }
+        });
+        // ==================== END LANGUAGE SYSTEM ====================
+document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            initMarketTicker();
+            animateCounters();
+            initScrollAnimation();
+            initPortfolioChart();
+            initAllocationChart();
+            updateSavingsCalc();
+
+            // Animate risk needle after a delay
+            setTimeout(animateRiskNeedle, 1000);
+        });
+    </script>
+</body>
+</html>
+
+    <script>
+        // Market Ticker Data
+        const marketData = [
+            { symbol: 'TASI', name: 'تاسي', price: '11,240', change: '+1.2%', up: true },
+            { symbol: 'S&P500', name: 'S&P 500', price: '4,320', change: '+0.8%', up: true },
+            { symbol: 'NASDAQ', name: 'ناسداك', price: '13,450', change: '-0.3%', up: false },
+            { symbol: 'BTC', name: 'بيتكوين', price: '67,230', change: '+2.1%', up: true },
+            { symbol: 'ETH', name: 'إيثيريوم', price: '3,450', change: '+1.5%', up: true },
+            { symbol: 'GOLD', name: 'ذهب', price: '2,340', change: '-0.2%', up: false },
+            { symbol: 'OIL', name: 'نفط', price: '78.50', change: '+1.8%', up: true },
+            { symbol: 'EUR', name: 'يورو/دولار', price: '1.08', change: '+0.1%', up: true },
+        ];
+
+        function initMarketTicker() {
+            const ticker = document.getElementById('marketTicker');
+            const ticker2 = document.getElementById('marketTicker2');
+            const html = marketData.map(item => `
+                <div class="flex items-center gap-2 px-4">
+                    <span class="font-bold text-sm">${item.name}</span>
+                    <span class="text-sm">${item.price}</span>
+                    <span class="text-sm ${item.up ? 'text-fintech-green' : 'text-red-400'}">
+                        <i class="fas fa-${item.up ? 'arrow-up' : 'arrow-down'}"></i> ${item.change}
+                    </span>
+                </div>
+            `).join('');
+            ticker.innerHTML = html;
+            ticker2.innerHTML = html;
+        }
+
+        // Counter Animation
+        function animateCounters() {
+            const counters = document.querySelectorAll('.number-counter');
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target'));
+                const duration = 2000;
+                const increment = target / (duration / 16);
+                let current = 0;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        counter.textContent = target.toLocaleString();
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = Math.floor(current).toLocaleString();
+                    }
+                }, 16);
+            });
+        }
+
+        // Scroll Animation
+        function initScrollAnimation() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.slide-in').forEach(el => observer.observe(el));
+        }
+
+        // Portfolio Chart
+        let portfolioChart;
+        function initPortfolioChart() {
+            const ctx = document.getElementById('portfolioChart').getContext('2d');
+            portfolioChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
+                    datasets: [{
+                        label: 'أداء المحفظة',
+                        data: [42000, 43500, 41000, 44500, 43800, 45230],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#10b981',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#94a3b8' }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#94a3b8' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Allocation Chart
+        let allocationChart;
+        function initAllocationChart() {
+            const ctx = document.getElementById('allocationChart').getContext('2d');
+            allocationChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['أسهم', 'سندات', 'عقارات', 'نقد', 'عملات رقمية'],
+                    datasets: [{
+                        data: [40, 25, 15, 12, 8],
+                        backgroundColor: [
+                            '#10b981',
+                            '#14b8a6',
+                            '#f59e0b',
+                            '#3b82f6',
+                            '#8b5cf6'
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#94a3b8',
+                                padding: 15,
+                                font: { size: 12 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update Dashboard
+        function updateDashboard() {
+            const assets = document.getElementById('totalAssets');
+            const returns = document.getElementById('monthlyReturn');
+
+            assets.style.opacity = '0';
+            setTimeout(() => {
+                assets.textContent = '$' + (44000 + Math.floor(Math.random() * 3000)).toLocaleString();
+                assets.style.opacity = '1';
+            }, 300);
+
+            returns.textContent = '+$' + (1000 + Math.floor(Math.random() * 500)).toLocaleString();
+
+            if (portfolioChart) {
+                const newData = portfolioChart.data.datasets[0].data.map(v => v + (Math.random() - 0.5) * 2000);
+                portfolioChart.data.datasets[0].data = newData;
+                portfolioChart.update();
+            }
+
+            showToast('تم التحديث', 'تم تحديث بيانات المحفظة بنجاح');
+        }
+
+        // Risk Analysis
+        let currentRisk = 'moderate';
+        function setRisk(risk) {
+            currentRisk = risk;
+            document.querySelectorAll('.risk-btn').forEach(btn => {
+                if (btn.dataset.risk === risk) {
+                    btn.classList.add('border-fintech-green', 'bg-fintech-green/20');
+                    btn.classList.remove('border-white/20');
+                } else {
+                    btn.classList.remove('border-fintech-green', 'bg-fintech-green/20');
+                    btn.classList.add('border-white/20');
+                }
+            });
+        }
+
+        // Analysis Form
+        document.getElementById('analysisForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const income = parseInt(document.getElementById('income').value);
+            const expenses = parseInt(document.getElementById('expenses').value);
+            const savings = parseInt(document.getElementById('savings').value);
+            const debts = parseInt(document.getElementById('debts').value);
+            const goal = document.getElementById('goal').value;
+
+            const netIncome = income - expenses;
+            const savingsRate = (netIncome / income * 100).toFixed(1);
+            const debtToIncome = (debts / income * 100).toFixed(1);
+            const emergencyMonths = (savings / expenses).toFixed(1);
+
+            const t3 = translations[currentLang];
+            let riskLevel, riskColor, recommendation;
+            if (currentRisk === 'conservative') {
+                riskLevel = t3.conservative;
+                riskColor = 'text-fintech-green';
+                recommendation = currentLang === 'ar' ? 'أنصحك بالتركيز على السندات الحكومية وصناديق الاستثمار المتنوعة مع القليل من الأسهم الدفاعية.' : 'Focus on government bonds and diversified funds with some defensive stocks.';
+            } else if (currentRisk === 'moderate') {
+                riskLevel = t3.moderate;
+                riskColor = 'text-fintech-gold';
+                recommendation = currentLang === 'ar' ? 'توزيع متوازن بين الأسهم والسندات مع 15% في العقارات REITs.' : 'Balanced allocation between stocks and bonds with 15% in REITs.';
+            } else {
+                riskLevel = t3.aggressive;
+                riskColor = 'text-red-400';
+                recommendation = currentLang === 'ar' ? 'زيادة التعرض للأسهم الناشئة والعملات الرقمية مع مراقبة يومية.' : 'Increase exposure to emerging stocks and crypto with daily monitoring.';
+            }
+
+            const resultsHTML = `
+                <div class="space-y-4">
+                    <div class="p-4 rounded-xl bg-gradient-to-r from-fintech-green/20 to-fintech-teal/20 border border-fintech-green/30">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-robot text-fintech-green"></i>
+                            <span class="font-semibold">تحليل الذكاء الاصطناعي</span>
+                        </div>
+                        <p class="text-sm text-gray-300">${recommendation}</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <div class="text-sm text-gray-400 mb-1">معدل الادخار</div>
+                            <div class="text-2xl font-bold ${savingsRate > 20 ? 'text-fintech-green' : 'text-fintech-gold'}">${savingsRate}%</div>
+                            <div class="text-xs text-gray-400">${savingsRate > 20 ? 'ممتاز' : 'يحتاج تحسين'}</div>
+                        </div>
+                        <div class="glass-card rounded-xl p-4 text-center">
+                            <div class="text-sm text-gray-400 mb-1">نسبة الديون</div>
+                            <div class="text-2xl font-bold ${debtToIncome < 30 ? 'text-fintech-green' : 'text-red-400'}">${debtToIncome}%</div>
+                            <div class="text-xs text-gray-400">${debtToIncome < 30 ? 'صحية' : 'مرتفعة'}</div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-xl p-4">
+                        <div class="text-sm text-gray-400 mb-2">أشهر الطوارئ المتاحة</div>
+                        <div class="flex items-center gap-3">
+                            <div class="flex-1 h-3 rounded-full bg-white/10">
+                                <div class="h-full rounded-full bg-gradient-to-r from-fintech-green to-fintech-teal progress-bar" style="width: ${Math.min(emergencyMonths * 10, 100)}%"></div>
+                            </div>
+                            <span class="font-bold text-fintech-green">${emergencyMonths} شهر</span>
+                        </div>
+                        <div class="text-xs text-gray-400 mt-1">الموصى به: 6 أشهر على الأقل</div>
+                    </div>
+
+                    <div class="glass-card rounded-xl p-4">
+                        <div class="text-sm font-semibold mb-3">خطة الاستثمار المقترحة</div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-400">صناديق الأسهم</span>
+                                <span class="text-sm font-bold">${currentRisk === 'aggressive' ? '60%' : currentRisk === 'moderate' ? '45%' : '30%'}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-400">السندات</span>
+                                <span class="text-sm font-bold">${currentRisk === 'aggressive' ? '20%' : currentRisk === 'moderate' ? '35%' : '50%'}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-400">العقارات</span>
+                                <span class="text-sm font-bold">15%</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-400">نقد/طوارئ</span>
+                                <span class="text-sm font-bold">5%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-fintech-gold/10 border border-fintech-gold/30">
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-star text-fintech-gold mt-1"></i>
+                            <div>
+                                <div class="font-semibold text-sm mb-1">الهدف المالي: ${getGoalName(goal)}</div>
+                                <p class="text-xs text-gray-400">بناءً على دخلك الحالي، تحتاج إلى ادخار $${(netIncome * 0.2).toFixed(0)} شهرياً لتحقيق هذا الهدف في 5 سنوات.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('analysisResults').innerHTML = resultsHTML;
+
+            // Update risk meter based on analysis data
+            updateRiskMeterFromAnalysis(savingsRate, debtToIncome, emergencyMonths, currentRisk);
+
+            showToast(translations[currentLang].success, translations[currentLang].analysisDone);
+        });
+
+        function updateRiskMeterFromAnalysis(savingsRate, debtToIncome, emergencyMonths, riskProfile) {
+            // Calculate dynamic risk score (0-100)
+            let riskScore = 50; // base
+
+            // Debt impact (high debt = higher risk)
+            if (debtToIncome > 50) riskScore += 25;
+            else if (debtToIncome > 30) riskScore += 15;
+            else if (debtToIncome > 10) riskScore += 5;
+            else riskScore -= 10;
+
+            // Savings rate impact (low savings = higher risk)
+            if (savingsRate < 10) riskScore += 20;
+            else if (savingsRate < 20) riskScore += 10;
+            else if (savingsRate > 30) riskScore -= 15;
+
+            // Emergency months impact
+            if (emergencyMonths < 3) riskScore += 15;
+            else if (emergencyMonths < 6) riskScore += 5;
+            else if (emergencyMonths > 12) riskScore -= 10;
+
+            // Risk profile impact
+            if (riskProfile === 'aggressive') riskScore += 10;
+            else if (riskProfile === 'conservative') riskScore -= 10;
+
+            // Clamp between 0-100
+            riskScore = Math.max(0, Math.min(100, Math.round(riskScore)));
+
+            // Update the risk meter needle
+            const needle = document.getElementById('riskNeedle');
+            const scoreDisplay = document.getElementById('riskScore');
+            const riskLabel = document.querySelector('.risk-meter + div span');
+
+            if (needle && scoreDisplay) {
+                const targetRotation = -90 + (riskScore / 100 * 180);
+                needle.style.transform = 'translateX(-50%) rotate(' + targetRotation + 'deg)';
+                scoreDisplay.textContent = riskScore;
+
+                // Update label and color
+                let labelText, labelColor, meterColor;
+                const t2 = translations[currentLang];
+                if (riskScore <= 25) {
+                    labelText = t2.veryLowRisk;
+                    labelColor = 'text-fintech-green';
+                    meterColor = 'bg-fintech-green/20';
+                } else if (riskScore <= 45) {
+                    labelText = t2.lowRisk;
+                    labelColor = 'text-fintech-green';
+                    meterColor = 'bg-fintech-green/20';
+                } else if (riskScore <= 65) {
+                    labelText = t2.mediumRisk;
+                    labelColor = 'text-fintech-gold';
+                    meterColor = 'bg-fintech-gold/20';
+                } else if (riskScore <= 80) {
+                    labelText = t2.highRisk;
+                    labelColor = 'text-orange-400';
+                    meterColor = 'bg-orange-500/20';
+                } else {
+                    labelText = t2.veryHighRisk;
+                    labelColor = 'text-red-400';
+                    meterColor = 'bg-red-500/20';
+                }
+
+                if (riskLabel) {
+                    riskLabel.textContent = labelText;
+                    riskLabel.className = 'px-3 py-1 rounded-full ' + meterColor + ' ' + labelColor + ' text-sm font-semibold';
+                }
+
+                // Also update the risk index card in dashboard
+                const riskIndexCard = document.getElementById('riskIndex');
+                if (riskIndexCard) {
+                    riskIndexCard.textContent = riskScore + '/100';
+                    if (riskScore <= 45) {
+                        riskIndexCard.className = 'text-2xl font-bold text-fintech-green';
+                    } else if (riskScore <= 65) {
+                        riskIndexCard.className = 'text-2xl font-bold text-fintech-gold';
+                    } else {
+                        riskIndexCard.className = 'text-2xl font-bold text-red-400';
+                    }
+                }
+            }
+        }
+
+        function getGoalName(goal) {
+            const goalsAr = {
+                'retirement': 'التقاعد المبكر',
+                'house': 'شراء منزل',
+                'education': 'تعليم الأطفال',
+                'travel': 'سفر واستكشاف',
+                'business': 'بدء مشروع'
+            };
+            const goalsEn = {
+                'retirement': 'Early Retirement',
+                'house': 'Buy a House',
+                'education': 'Children Education',
+                'travel': 'Travel & Explore',
+                'business': 'Start a Business'
+            };
+            return currentLang === 'ar' ? (goalsAr[goal] || goal) : (goalsEn[goal] || goal);
+        }
+
+        // Savings Calculator
+        const incomeSlider = document.getElementById('incomeSlider');
+        const incomeValue = document.getElementById('incomeValue');
+        const savingsBar = document.getElementById('savingsBar');
+        const savingsPercent = document.getElementById('savingsPercent');
+        const monthlySavings = document.getElementById('monthlySavings');
+        const year1 = document.getElementById('year1');
+        const year5 = document.getElementById('year5');
+
+        function updateSavingsCalc() {
+            const income = parseInt(incomeSlider.value);
+            incomeValue.textContent = '$' + income.toLocaleString();
+
+            let rate = 20;
+            if (income < 3000) rate = 10;
+            else if (income < 5000) rate = 15;
+            else if (income < 10000) rate = 20;
+            else if (income < 15000) rate = 25;
+            else rate = 30;
+
+            savingsBar.style.width = rate + '%';
+            savingsPercent.textContent = rate + '%';
+
+            const monthly = income * (rate / 100);
+            monthlySavings.textContent = '$' + monthly.toLocaleString();
+
+            const y1 = monthly * 12 * 1.05;
+            const y5 = monthly * 12 * ((Math.pow(1.05, 5) - 1) / 0.05);
+
+            year1.textContent = '$' + Math.floor(y1).toLocaleString();
+            year5.textContent = '$' + Math.floor(y5).toLocaleString();
+        }
+
+        incomeSlider.addEventListener('input', updateSavingsCalc);
+
+        // Chat Assistant
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, 'user');
+            chatInput.value = '';
+
+            setTimeout(() => {
+                const response = generateAIResponse(message);
+                addMessage(response, 'ai');
+            }, 1000);
+        }
+
+        function quickQuestion(question) {
+            chatInput.value = question;
+            sendMessage();
+        }
+
+        function addMessage(text, sender) {
+            const div = document.createElement('div');
+            div.className = 'flex items-start gap-3';
+
+            if (sender === 'user') {
+                div.innerHTML = `
+                    <div class="glass-card rounded-2xl rounded-tl-none p-3 max-w-[80%] ml-auto bg-fintech-green/20">
+                        <p class="text-sm">${text}</p>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-fintech-blue flex items-center justify-center flex-shrink-0 mt-1">
+                        <i class="fas fa-user text-white text-xs"></i>
+                    </div>
+                `;
+            } else {
+                div.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-fintech-green to-fintech-teal flex items-center justify-center flex-shrink-0 mt-1">
+                        <i class="fas fa-robot text-white text-xs"></i>
+                    </div>
+                    <div class="glass-card rounded-2xl rounded-tr-none p-3 max-w-[80%]">
+                        <p class="text-sm">${text}</p>
+                    </div>
+                `;
+            }
+
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function generateAIResponse(message) {
+            const lowerMsg = message.toLowerCase();
+            const isAr = currentLang === 'ar';
+
+            if (lowerMsg.includes('استثمار') || lowerMsg.includes('أبدأ') || lowerMsg.includes('invest') || lowerMsg.includes('start')) {
+                return isAr ? 'لبدء الاستثمار، أنصحك باتباع هذه الخطوات: 1) بناء صندوق طوارئ يغطي 6 أشهر، 2) فتح حساب في منصة استثمار موثوقة، 3) البدء بصناديق الاستثمار المتنوعة (ETFs) كخطوة أولى، 4) تنويع المحفظة تدريجياً. هل تريد تفاصيل أكثر عن أي خطوة؟' : 'To start investing, follow these steps: 1) Build an emergency fund covering 6 months, 2) Open an account on a trusted investment platform, 3) Start with diversified ETFs as a first step, 4) Gradually diversify your portfolio. Want more details on any step?';
+            }
+            else if (lowerMsg.includes('ادخار') || lowerMsg.includes('خطة') || lowerMsg.includes('savings') || lowerMsg.includes('plan')) {
+                return isAr ? 'أفضل خطة ادخار تعتمد على وضعك: للدخل < $3000: ادخر 10%، للدخل $3000-5000: 15-20%، للدخل > $5000: 25-30%. ابدأ بصندوق الطوارئ أولاً (6 أشهر نفقات)، ثم ادخر للأهداف المتوسطة (1-5 سنوات)، وأخيراً للتقاعد الطويل.' : 'Best savings plan depends on your situation: Income < $3000: save 10%, Income $3000-5000: 15-20%, Income > $5000: 25-30%. Start with emergency fund first (6 months expenses), then save for medium goals (1-5 years), finally for long-term retirement.';
+            }
+            else if (lowerMsg.includes('مخاطر') || lowerMsg.includes('خطر') || lowerMsg.includes('risk')) {
+                return isAr ? 'بناءً على تحليلي، مخاطرك الحالية منخفضة (23/100). نسبة ديونك صحية وتمتلك مخزن طوارئ جيد. لكن أنصحك بزيادة تنويع الأصول. هل تريد تقرير مخاطر مفصل؟' : 'Based on my analysis, your current risk is low (23/100). Your debt ratio is healthy and you have a good emergency fund. However, I recommend increasing asset diversification. Want a detailed risk report?';
+            }
+            else if (lowerMsg.includes('مرحبا') || lowerMsg.includes('هلا') || lowerMsg.includes('hello') || lowerMsg.includes('hi')) {
+                return isAr ? 'مرحباً! أنا هنا لمساعدتك في إدارة ماليتك. يمكنني تحليل استثماراتك، اقتراح خطط ادخار، حساب العوائد المتوقعة، أو الإجابة على أي سؤال مالي. ما الذي يهمك اليوم؟' : 'Hello! I am here to help you manage your finances. I can analyze your investments, suggest savings plans, calculate expected returns, or answer any financial question. What matters to you today?';
+            }
+            else {
+                return isAr ? 'فهمت سؤالك. بناءً على بياناتك المالية الحالية، أنصحك بالتركيز على زيادة معدل الادخار إلى 20% على الأقل. كما يمكنني إعداد تقرير مفصل عن وضعك المالي إذا أردت. هل تريد ذلك؟' : 'I understand your question. Based on your current financial data, I recommend focusing on increasing your savings rate to at least 20%. I can also prepare a detailed report on your financial situation if you want. Would you like that?';
+            }
+        }
+
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Toast Notification
+        function showToast(title, message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Navigation
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function openDashboard() {
+            if (!currentUser && !localStorage.getItem('fintechgen_current_user')) {
+                showToast(translations[currentLang].error, translations[currentLang].emailNotRegistered);
+                document.getElementById('authOverlay').style.display = 'flex';
+                document.getElementById('authOverlay').style.opacity = '1';
+                document.getElementById('authOverlay').style.transform = 'scale(1)';
+                return;
+            }
+            scrollToSection('dashboard');
+            showToast('مرحباً', 'تم فتح لوحة التحكم التفاعلية');
+        }
+
+        function toggleLanguage() {
+            showToast(translations[currentLang].comingSoon, translations[currentLang].englishSoon);
+        }
+
+        // Risk Needle Animation
+        function animateRiskNeedle() {
+            const needle = document.getElementById('riskNeedle');
+            let currentRotation = -90;
+            const targetRotation = -90 + (23 / 100 * 180);
+
+            const interval = setInterval(() => {
+                if (currentRotation >= targetRotation) {
+                    clearInterval(interval);
+                } else {
+                    currentRotation += 2;
+                    needle.style.transform = 'translateX(-50%) rotate(' + currentRotation + 'deg)';
+                }
+            }, 20);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            initMarketTicker();
+            animateCounters();
+            initScrollAnimation();
+            initPortfolioChart();
+            initAllocationChart();
+            updateSavingsCalc();
+
+            setTimeout(animateRiskNeedle, 1000);
+        });
+    </script>
+</body>
+</html>
