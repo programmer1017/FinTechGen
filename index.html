@@ -218,6 +218,22 @@
                     <div>
                         <div class="flex items-center gap-3">
     <button onclick="toggleLanguage()" ... > EN </button>
+                            <div class="flex items-center gap-3">
+    <button onclick="toggleLanguage()" class="px-3 py-1 rounded-full border border-fintech-green/30 text-fintech-green text-sm hover:bg-fintech-green/10 transition font-inter" id="langToggleBtn">
+        EN
+    </button>
+
+    <button onclick="shareOurPlatform()" class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-fintech-teal to-fintech-green text-white text-sm font-semibold hover:shadow-lg hover:shadow-fintech-teal/30 transition transform hover:scale-105">
+        <i class="fas fa-share-alt"></i>
+        <span>مشاركة</span>
+    </button>
+    <button id="navLoginBtn" onclick="openDashboard()" class="px-4 py-2 rounded-lg bg-gradient-to-r from-fintech-green to-fintech-teal text-white text-sm font-semibold hover:shadow-lg hover:shadow-fintech-green/30 transition pulse-glow">
+        <i class="fas fa-user-circle ml-2"></i>دخول المنصة
+    </button>
+    <button id="navLogoutBtn" onclick="logout()" class="hidden px-4 py-2 rounded-lg border border-red-500/50 text-red-400 text-sm font-semibold hover:bg-red-500/20 hover:text-red-300 transition">
+        <i class="fas fa-sign-out-alt ml-2"></i>تسجيل الخروج
+    </button>
+</div>
     <button id="navLoginBtn" ... > دخول المنصة </button>
     <button id="navLogoutBtn" ... > تسجيل الخروج </button>
 </div>
